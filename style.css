@@ -1,3 +1,18 @@
+body {
+  background:#ddd;
+  font: 14px Arial;
+}
+
+ul {
+  margin: 0px 0px 0px 0px;
+  font-size: 0.933em;
+  line-height: 1.650em;
+}
+
+a {
+  text-decoration: none;
+}
+
 /*-----Tabs-----*/
 .tabs {
   width:100%;
@@ -25,6 +40,7 @@
   font-size:16px;
   font-weight:600;
   color:#4c4c4c;
+  transition:all linear 0.15s;
 }
 
 .tab-links a:hover {
