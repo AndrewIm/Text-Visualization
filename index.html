@@ -1,0 +1,43 @@
+<meta charset="utf-8">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.tabs .tab-links a').on('click', function(e)  {
+          var currentAttrValue = jQuery(this).attr('href');
+
+          // Show/Hide Tabs
+          $('.tabs ' + currentAttrValue).show().siblings().hide();
+
+          // Change/remove current tab to active
+          $(this).parent('li').addClass('active').siblings().removeClass('active');
+
+          e.preventDefault();
+      });
+    });
+  </script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Text Visualization</title>
+</head>
+
+<body>
+  <h1>Text Visualization</h1>
+  <div class="tabs">
+    <ul class="tab-links">
+      <li class="active"><a href="#tab1">Tab #1</a></li>
+      <li><a href="#tab2">Tab #2</a></li>
+    </ul>
+    
+    <div class="tab-content">
+      <div id="tab1" class="tab active">
+        <p>Overview stuff here.</p>
+      </div>
+      
+      <div id="tab2" class="tab">
+        <p>Relationship stuff here.</p>
+      </div>
+    </div>
+  
+  </div>
+</body>
