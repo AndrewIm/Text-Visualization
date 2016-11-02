@@ -20,7 +20,7 @@ a {
 #tagCloud {
   height: 80%;
   width: 35%;
-  background:#F00;
+  /*background:#F00;*/
   margin: 0px;
   display: inline-block;
 }
@@ -88,4 +88,8 @@ li.active a, li.active a:hover {
 
 .tab.active {
     display:block;
+}
+
+#overviewTabs {
+    overflow: scroll;
 }
