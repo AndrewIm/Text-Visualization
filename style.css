@@ -18,7 +18,7 @@ a {
 }
 
 #tagCloud {
-  height: 80%;
+  height: 95%;
   width: 35%;
   background:#F00;
   margin: 0px;
@@ -31,6 +31,22 @@ a {
   margin: 0px;
   background: #ddd;
   padding: 1%;
+}
+
+#relationshipChart {
+  height: 90%;
+  width: 35%;
+  background: #F00;
+  margin: 0px;
+  display: inline-block;
+}
+
+#relationshipMap {
+  float: right;
+  height: 90%;
+  width: 60%;
+  margin: 0px;
+  background: #ddd;
 }
 
 /*-----Tabs-----*/
