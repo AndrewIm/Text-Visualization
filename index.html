@@ -1,0 +1,61 @@
+<meta charset="utf-8">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.tabs .tab-links a').on('click', function(e)  {
+          var currentAttrValue = jQuery(this).attr('href');
+
+          // Show/Hide Tabs
+          $('.tabs ' + currentAttrValue).show().siblings().hide();
+
+          // Change/remove current tab to active
+          $(this).parent('li').addClass('active').siblings().removeClass('active');
+
+          e.preventDefault();
+      });
+    });
+  </script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Text Visualization</title>
+</head>
+
+<body>
+  <h1>Text Visualization</h1>
+  <div class="tabs">
+    <ul class="tab-links">
+      <li class="active"><a href="#overview">Overview</a></li>
+      <li><a href="#relationships">Relationships</a></li>
+    </ul>
+    
+    <div class="tab-content">
+      <div id="overview" class="tab active">
+        <div id="tagCloud">
+          <p>TagCloud here.</p>
+        </div>
+        <div id="mapAndTimeline">
+          <ul class="tab-links">
+            <li class="active"><a href="#overviewTimeline">Timeline</a></li>
+            <li><a href="#overviewMap">Map</a></li>
+          </ul>
+          
+          <div id="overviewTabs" class="tab-content">
+            <div id="overviewTimeline" class="tab active">
+              <p>Timeline here.</p>
+            </div>
+            
+            <div id="overviewMap" class="tab">
+              <p>Map here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="relationships" class="tab">
+        <p>Relationship stuff here.</p>
+      </div>
+    </div>
+  
+  </div>
+</body>
