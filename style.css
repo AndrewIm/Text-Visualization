@@ -1,6 +1,10 @@
 body {
   background:#ddd;
   font: 14px Arial;
+  width: 90%;
+  height: 90%;
+  margin: auto;
+  padding-top: 1%;
 }
 
 ul {
@@ -59,6 +63,7 @@ li.active a, li.active a:hover {
     border-radius:3px;
     box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
     background:#fff;
+    height: 80%;
 }
 
 .tab {
