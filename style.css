@@ -2,31 +2,33 @@ body {
   background:#ddd;
   font: 14px Arial;
   width: 90%;
-  height: 90%;
+  height: 95%;
   margin: auto;
   padding-top: 1%;
 }
 
-ul {
-  margin: 0px 0px 0px 0px;
-  font-size: 0.933em;
-  line-height: 1.650em;
+#visualizations {
+  height: 90%;
+  padding:15px;
+  border-radius:3px;
+  box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+  background:#fff;
 }
 
-a {
-  text-decoration: none;
+#options {
+  padding: 15px;
 }
 
 #tagCloud {
-  height: 95%;
+  height: 85%;
   width: 35%;
-  /*background:#F00;*/
+  padding: 1%;
   margin: 0px;
-  display: inline-block;
 }
 
-#mapAndTimeline {
+#timeline {
   float: right;
+  height: 85%;
   width: 60%;
   margin: 0px;
   background: #ddd;
@@ -34,78 +36,25 @@ a {
 }
 
 #relationshipChart {
-  height: 90%;
+  height: 85%;
   width: 35%;
   background: #F00;
   margin: 0px;
-  display: inline-block;
 }
 
-#relationshipMap {
-  float: right;
-  height: 90%;
-  width: 60%;
-  margin: 0px;
-  background: #ddd;
+#intervalSlider {
+  display: flex;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1%;
+  justify-content: center;
 }
 
-/*-----Tabs-----*/
-.tabs {
-  width:100%;
+.active {
   display:inline-block;
 }
 
-/*----- Tab Links -----*/
-.tab-links:after {
-  display:block;
-  clear:both;
-  content:'';
-}
-
-.tab-links li {
-  margin:0px 5px;
-  float:left;
-  list-style:none;
-}
-
-.tab-links a {
-  padding:9px 15px;
-  display:inline-block;
-  border-radius:3px 3px 0px 0px;
-  background:#7FB5DA;
-  font-size:16px;
-  font-weight:600;
-  color:#4c4c4c;
-  transition:all linear 0.15s;
-}
-
-.tab-links a:hover {
-    background:#a7cce5;
-    text-decoration:none;
-}
-
-li.active a, li.active a:hover {
-    background:#fff;
-    color:#4c4c4c;
-}
-
-/*----- Content of Tabs -----*/
-.tab-content {
-    padding:15px;
-    border-radius:3px;
-    box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
-    background:#fff;
-    height: 80%;
-}
-
-.tab {
-    display:none;
-}
-
-.tab.active {
-    display:block;
-}
-
-#overviewTabs {
-    overflow: scroll;
+.inactive {
+  display: none;
 }
