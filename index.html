@@ -11,16 +11,19 @@
      <link rel="stylesheet" href="css/app.css">
   <script>
     $(document).ready(function() {
-      $('.tabs .tab-links a').on('click', function(e)  {
-          var currentAttrValue = jQuery(this).attr('href');
-
-          // Show/Hide Tabs
-          $('.tabs ' + currentAttrValue).show().siblings().hide();
-
-          // Change/remove current tab to active
-          $(this).parent('li').addClass('active').siblings().removeClass('active');
-
-          e.preventDefault();
+      $('#showRelationships').on('click', function()  {
+        var isChecked = $(this).prop("checked");
+        
+        // If checked, hide tag cloud and show relationships.  If not, then hide relationships and show tag cloud.
+        if(isChecked) {
+          $("#tagCloud").removeClass("active").addClass("inactive");
+          $("#relationshipChart").addClass("active").removeClass("inactive");
+          $("#termRelationship").attr("disabled", false);
+        } else {
+          $("#tagCloud").addClass("active").removeClass("inactive");
+          $("#relationshipChart").removeClass("active").addClass("inactive");
+          $("#termRelationship").attr("disabled", true);
+        }
       });
     });
   </script>
@@ -30,64 +33,21 @@
 
 <body>
   <h1>Text Visualization</h1>
-  <div class="tabs">
-    <ul class="tab-links">
-      <li class="active"><a href="#overview">Overview</a></li>
-      <li><a href="#relationships">Relationships</a></li>
-    </ul>
-    
-    <div class="tab-content">
-      <div id="overview" class="tab active">
-        <div id="tagCloud">
-        <!--  <p>TagCloud here.</p>-->
-        </div>
-        <div id="mapAndTimeline">
-          <ul class="tab-links">
-            <li class="active"><a href="#overviewTimeline">Timeline</a></li>
-            <li><a href="#overviewMap">Map</a></li>
-          </ul>
-          
-          <div id="overviewTabs" class="tab-content">
-            <div id="overviewTimeline" class="tab active">
-              <p>Timeline here.</p>
-            </div>
-            
-            <div id="overviewMap" class="tab">
-              <p>Map here.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div id="relationships" class="tab">
-        <table>
-          <tr>
-            <td>
-              Term:
-            </td>
-            <td>
-              <input type="text" name="relationshipTerm">
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Number of related words: &ensp;
-            </td>
-            <td>
-              <input type="text" name="numberRelatedWords">
-            </td>
-          </tr>
-        </table>
-        <br>
-        <div id="relationshipChart">
-          <p>Relationship Chart Here.</p>
-        </div>
-        <div id="relationshipMap">
-          <p>Relationship Map Here.</p>
-        </div>
-      </div>
+  <div id="visualizations">
+    <div id="options">
+      <input type="checkbox" id="showRelationships"> Show Relationships for term: <input type="text" id="termRelationship" disabled><br>
     </div>
-  
+    <div id="tagCloud" class="active">
+    </div>
+    <div id="relationshipChart" class="inactive">
+      <p>Relationship chart here.</p>
+    </div>
+    <div id="timeline">
+      <p>Timeline here.</p>
+    </div>
+    <div id="intervalSlider">
+      <p>Time interval slider here.</p>
+    </div>
   </div>
 </body>
 
