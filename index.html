@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://d3js.org/d3.v3.js"></script>
     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/hashtable.js"></script>
@@ -72,7 +72,8 @@
       });
     svg.call(wordTip);
 
-
+    var parseDate = d3.time.format("%Y %m").parse;
+    
     var topTerms;
     //HashTable to store the data with TERM as a key
     var allTerms = new Hashtable();
@@ -82,6 +83,9 @@
         d3.json("data/termsfrequency.json", function (data) {
             var termsData = data;
             data.forEach(function (d) {
+                d.properties.monthfreq.forEach(function(d) {
+                  d.month = parseDate(d.month);
+                });
                 allTerms.put(d.term, d.properties)
             });
             var temp = allTerms.entries();
@@ -110,7 +114,81 @@
             layout.start();
 
             // Create streamgraph timeline.
-
+            stack = d3.layout.stack().offset("wiggle")
+                        .values(function(d){ return d[1].monthfreq; })
+                        .x(function(d){ return d.month; })
+                        .y(function(d){ return d.freq; });
+          
+            // Fills in missing dates in 'data'.
+            function fillData(data, startDate, endDate) {
+              var d = [],
+                  len = data.length,
+                  now = new Date(startDate),
+                  last = new Date(endDate),
+                  iterator = 0,
+                  y;
+              
+              while (now >= last) {
+                y = 0;
+                if (now.getTime() == new Date(data[iterator].month).getTime()) {
+                  y = data[iterator].freq;
+                  ++iterator;
+                }
+                d.push({"month": new Date(now), "freq": y});
+                now["setMonth"](now.getMonth() - 1);
+              }
+              
+              return d;
+            }
+          
+            var startDate = d3.max(topTerms, function(d) {
+              var localMax = d3.max(d[1].monthfreq, function(d) { return d.month; });
+              return localMax;
+            });
+            
+            var endDate = d3.min(topTerms, function(d) {
+              var localMin = d3.min(d[1].monthfreq, function(d) { return d.month; });
+              return localMin;
+            });
+            
+            topTerms.forEach(function(d) {
+              d[1].monthfreq = fillData(d[1].monthfreq, startDate, endDate);
+            });
+          
+            var svgWidth = 600;
+            var svgHeight = 550;
+          
+            var timelineX = d3.time.scale()
+                .range([0, svgWidth]);
+          
+            var timelineY = d3.scale.linear()
+                .range([svgHeight, 0]);
+          
+            var area = d3.svg.area()
+                .interpolate("cardinal")
+                .x(function(d) { return timelineX(d.month); })
+                .y0(function(d) { return timelineY(d.y0); })
+                .y1(function(d) { return timelineY(d.y0 + d.y); });
+          
+            var layers = stack(topTerms);
+          
+            timelineX.domain([endDate, startDate]);
+            timelineY.domain([0, d3.max(layers, function(d) {
+              var localMax = d3.max(d[1].monthfreq, function(d) { return d.y0 + d.y; });
+              return localMax;
+            })]);
+          
+            var timeline = d3.select("#timeline").append("svg")
+                .attr("width", svgWidth)
+                .attr("height", svgHeight)
+              .append("g");
+                      
+            timeline.selectAll(".layer")
+                .data(layers)
+              .enter().append("path")
+                .attr("class", "layer")
+                .attr("d", function(d) { return area(d[1].monthfreq); })
+                .style("fill", function(d, i) { return fill(i); });
 
             function draw(words) {
                 svg.selectAll("text")
