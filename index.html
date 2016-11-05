@@ -43,7 +43,6 @@
       <p>Relationship chart here.</p>
     </div>
     <div id="timeline">
-      <p>Timeline here.</p>
     </div>
     <div id="intervalSlider">
       <p>Time interval slider here.</p>
@@ -155,8 +154,8 @@
               d[1].monthfreq = fillData(d[1].monthfreq, startDate, endDate);
             });
           
-            var svgWidth = 600;
-            var svgHeight = 550;
+            var svgWidth = $("#timeline").width();
+            var svgHeight = $("#timeline").height();
           
             var timelineX = d3.time.scale()
                 .range([0, svgWidth]);
