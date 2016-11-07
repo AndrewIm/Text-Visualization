@@ -227,7 +227,9 @@
               .enter().append("path")
                 .attr("clip-path", "url(#sideClip)")
                 .attr("class", "layer")
-                .call(updateLayer);
+                .call(updateLayer)
+                .on("mouseover", highlightLayer)
+                .on("mouseout", unhighlightLayer);
           
             // Lines separating stacked layers.
             timeline.selectAll(".layerLine")
@@ -284,6 +286,32 @@
             // Updates the lines with their current data.
             function updateLayerLine() {
               this.attr("d", function(d) { return line(d[1].monthfreq); });
+            }
+          
+            function highlightLayer(d) {
+              timeline.selectAll(".layer")
+                  .attr("opacity", function(d1) {
+                    if (d[0] == d1[0]) {
+                      return "1";
+                    } else {
+                      return "0.2";
+                    }
+                  });
+              timeline.selectAll(".layerLine")
+                  .attr("opacity", function(d1) {
+                    if (d[0] == d1[0]) {
+                      return "1";
+                    } else {
+                      return "0.2";
+                    }
+                  });
+            }
+            
+            function unhighlightLayer() {
+              timeline.selectAll(".layer")
+                  .attr("opacity", "1");
+              timeline.selectAll(".layerLine")
+                  .attr("opacity", "1");
             }
 
             function draw(words) {
