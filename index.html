@@ -113,7 +113,7 @@
             layout.start();
 
             // Create streamgraph timeline.
-            stack = d3.layout.stack().offset("wiggle")
+            var stack = d3.layout.stack().offset("wiggle")
                         .values(function(d){ return d[1].monthfreq; })
                         .x(function(d){ return d.month; })
                         .y(function(d){ return d.freq; });
@@ -154,20 +154,41 @@
               d[1].monthfreq = fillData(d[1].monthfreq, startDate, endDate);
             });
           
+            var zeroSeries = [{freq: 0, month: endDate}];
+            zeroSeries = fillData(zeroSeries, startDate, endDate);
+            
+            var margin = {top: 20, right: 0, bottom: 30, left: 40};
             var svgWidth = $("#timeline").width();
             var svgHeight = $("#timeline").height();
+            var width = svgWidth * 0.95 - margin.left - margin.right;
+            var height = svgHeight - margin.bottom - margin.top;
           
             var timelineX = d3.time.scale()
-                .range([0, svgWidth]);
+                .range([0, width]);
           
             var timelineY = d3.scale.linear()
-                .range([svgHeight, 0]);
+                .range([height, 0]);
+          
+            var xAxis = d3.svg.axis()
+                .scale(timelineX)
+                .orient("bottom")
+                .ticks(5);
+            
+            var yAxis = d3.svg.axis()
+                .scale(timelineY)
+                .orient("left")
+                .ticks(7);
           
             var area = d3.svg.area()
                 .interpolate("cardinal")
                 .x(function(d) { return timelineX(d.month); })
                 .y0(function(d) { return timelineY(d.y0); })
                 .y1(function(d) { return timelineY(d.y0 + d.y); });
+          
+            var line = d3.svg.line()
+                .interpolate("cardinal")
+                .x(function(d) { return timelineX(d.month); })
+                .y(function(d) { return timelineY(d.y0); });
           
             var layers = stack(topTerms);
           
@@ -180,14 +201,53 @@
             var timeline = d3.select("#timeline").append("svg")
                 .attr("width", svgWidth)
                 .attr("height", svgHeight)
-              .append("g");
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                       
             timeline.selectAll(".layer")
                 .data(layers)
               .enter().append("path")
                 .attr("class", "layer")
-                .attr("d", function(d) { return area(d[1].monthfreq); })
+                .call(updateLayer);
+          
+            timeline.selectAll(".layerLine")
+                .data(layers)
+              .enter().append("path")
+                .attr("class", "layerLine")
+                .call(updateLayerLine);
+          
+            topTerms[15][1].monthfreq = zeroSeries;
+          
+            layers = stack(topTerms);
+            timeline.selectAll(".layer")
+                .data(layers)
+                .transition()
+                .duration(2000)
+                .call(updateLayer);
+            
+            timeline.selectAll(".layerLine")
+                .data(layers)
+                .transition()
+                .duration(2000)
+                .call(updateLayerLine);
+            
+            timeline.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+          
+            timeline.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+          
+            function updateLayer() {
+              this.attr("d", function(d) { return area(d[1].monthfreq); })
                 .style("fill", function(d, i) { return fill(i); });
+            }
+          
+            function updateLayerLine() {
+              this.attr("d", function(d) { return line(d[1].monthfreq); });
+            }
 
             function draw(words) {
                 svg.selectAll("text")
