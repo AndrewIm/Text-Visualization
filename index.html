@@ -236,9 +236,19 @@
                 .attr("clip-path", "url(#sideClip)")
                 .attr("class", "layerLine")
                 .call(updateLayerLine);
+            
+            // Add axes.
+            timeline.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+          
+            timeline.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
           
             // Zoom demo.
-            /*
+            
             endDate.setYear(2005);
             timelineX.domain([endDate, startDate]);
           
@@ -253,16 +263,17 @@
                 .transition()
                 .duration(2000)
                 .call(updateLayerLine);
-            
-            timeline.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
+                
+            timeline.select(".x.axis")
+                .transition()
+                .duration(2000)
                 .call(xAxis);
           
-            timeline.append("g")
-                .attr("class", "y axis")
+            timeline.select(".y.axis")
+                .transition()
+                .duration(2000)
                 .call(yAxis);
-            */
+            
           
             // Updates the stacked layers with their current data.
             function updateLayer() {
