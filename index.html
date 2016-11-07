@@ -1,130 +1,228 @@
 <meta charset="utf-8">
 <head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/hashtable.js"></script>
     <script src="js/d3cloud.js"></script>
     <script src="js/d3-tooltip.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-     <link rel="stylesheet" href="css/app.css">
-  <script>
-    $(document).ready(function() {
-      $('#showRelationships').on('click', function()  {
-        var isChecked = $(this).prop("checked");
-        
-        // If checked, hide tag cloud and show relationships.  If not, then hide relationships and show tag cloud.
-        if(isChecked) {
-          $("#tagCloud").removeClass("active").addClass("inactive");
-          $("#relationshipChart").addClass("active").removeClass("inactive");
-          $("#termRelationship").attr("disabled", false);
-        } else {
-          $("#tagCloud").addClass("active").removeClass("inactive");
-          $("#relationshipChart").removeClass("active").addClass("inactive");
-          $("#termRelationship").attr("disabled", true);
-        }
-      });
-    });
-  </script>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <title>Text Visualization</title>
+    <link rel="stylesheet" href="css/app.css">
+    <script>
+        $(document).ready(function () {
+            $('#showRelationships').on('click', function () {
+                var isChecked = $(this).prop("checked");
+
+                // If checked, hide tag cloud and show relationships.  If not, then hide relationships and show tag cloud.
+                if (isChecked) {
+                    $("#tagCloud").removeClass("active").addClass("inactive");
+                    $("#relationshipChart").addClass("active").removeClass("inactive");
+                    $("#termRelationship").attr("disabled", false);
+                } else {
+                    $("#tagCloud").addClass("active").removeClass("inactive");
+                    $("#relationshipChart").removeClass("active").addClass("inactive");
+                    $("#termRelationship").attr("disabled", true);
+                }
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Text Visualization</title>
 </head>
 
 <body>
-  <h1>Text Visualization</h1>
-  <div id="visualizations">
-    <div id="options">
-      <input type="checkbox" id="showRelationships"> Show Relationships for term: <input type="text" id="termRelationship" disabled><br>
+    <h1>Text Visualization</h1>
+    <div id="visualizations">
+        <div id="options">
+            <input type="checkbox" id="showRelationships">
+            Show Relationships for term:
+            <input type="text" id="termRelationship" disabled><br>
+        </div>
+        <div id="tagCloud" class="active">
+            <div>
+                <p id="range"></p>
+            </div>
+             <div class="modal"></div>
+        </div>
+        <div id="relationshipChart" class="inactive">
+            <p>Relationship chart here.</p>
+        </div>
+        <div id="timeline">
+            <p>Timeline here.</p>
+        </div>
+        <div id="intervalSlider">
+        </div>
     </div>
-    <div id="tagCloud" class="active">
-    </div>
-    <div id="relationshipChart" class="inactive">
-      <p>Relationship chart here.</p>
-    </div>
-    <div id="timeline">
-      <p>Timeline here.</p>
-    </div>
-    <div id="intervalSlider">
-      <p>Time interval slider here.</p>
-    </div>
-  </div>
-</body>
+   
 
- <script>
-     //tag cloud logic
-     {
-         //cloud svg width and height
-         var cloudWidth = 600;
-         var cloudHeight = 500;
-         var svg = d3.select("#tagCloud").append("svg")
-                         .attr("width", cloudWidth)
-                         .attr("height", cloudHeight)
-                       .append("g")
-                         .attr("transform", "translate(" + cloudWidth / 2 + "," + cloudHeight / 2 + ")")
+<script>
 
-         /* Initialize tooltip */
-         var wordTip = d3.tip()
-           .attr('class', 'd3-tip')
-           .offset([-10, 0])
-           .html(function (d) {
-               return "<strong>" + d.text + " :" + d.frequency + "</strong>";
-           });
-         svg.call(wordTip);
+    //HashTable to store the data with TERM as a key
+    var allTerms = new Hashtable();
+
+    //tag cloud logic
+    {
+
+        //cloud svg width and height
+       
+        var cloudWidth = $("#tagCloud").width();
+        var cloudHeight = $("#tagCloud").height();
+        var svg = d3.select("#tagCloud").append("svg")
+                        .attr("width", cloudWidth)
+                        .attr("height", cloudHeight)
+                      .append("g")
+                        .attr("transform", "translate(" + cloudWidth / 2 + "," + cloudHeight / 2 + ")")
+
+        /* Initialize tooltip */
+        var wordTip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function (d) {
+              return "<strong>" + d.text + " :" + d.frequency + "</strong>";
+          });
+        svg.call(wordTip);
+        var parse = d3.time.format("%Y %m");
+        var start = parse.parse("2004 01");
+        var end = parse.parse("2015 12");
+        var topTerms;
+        var monthlyData = []; 
+        var myWordCloud;
+        var fill = d3.scale.category20();
+        var brush;
+        var sizeScale = d3.scale.linear()
+                .range([5, 80]);
+        $(document).ready(function () {
+
+            var termsData;
+            //get frequency data
+            d3.json("data/termsfrequency.json", function (data) {
+                var termsData = data;
+                data.forEach(function (d) {
+                    allTerms.put(d.term, d.properties)
+                });
+
+                topTerms = getTopTerms(function () {
+                });
+
+                //Create a new instance of the word cloud visualisation.
+                myWordCloud = wordCloud('#tagCloud');
+
+                //Start cycling through the demo data
+                showNewWords(myWordCloud, topTerms);
+
+            });
+            //
+            // Plot Brush
+            brushwidth = $("#intervalSlider").width();
+            brushheight = 100;
+            brushsvg = d3.select("#intervalSlider").append("svg")
+                        .attr("width", brushwidth)
+                        .attr("height", brushheight)
+                      .append("g")
+                        .attr("transform", "translate(" + "0" + "," + "20" + ")")
+            //brush scales
+            var x = d3.time.scale()
+                    .domain([start, end])
+                    .range([0, brushwidth]);
+            var xAxis2 = d3.svg.axis() // xAxis for brush slider
+                         .scale(x)
+                        .orient("bottom");
+
+            brush = d3.svg.brush()
+                               .x(x)
+                                .on("brushend", display);
+
+            var context = brushsvg.append("g") // Brushing context box container
+                    .attr("transform", "translate(" + 0 + "," + 0 + ")")
+                    .attr("class", "context");
+            var tempEnd = parse.parse("2015 10");
+            brush.extent([start, tempEnd]);
+            context.append("g") // Create brushing xAxis
+                    .attr("class", "x axis1")
+                    .attr("transform", "translate(20," + "27" + ")")
+                    .call(xAxis2);
+
+            context.append("g")
+              .attr("class", "x brush")
+              .call(brush)
+              .selectAll("rect")
+               .attr("height", "30")
+                    .attr("fill", "#E6E7E8");
 
 
-         var topTerms;
-         //HashTable to store the data with TERM as a key
-         var allTerms = new Hashtable();
-         $(document).ready(function () {
-             var termsData;
-             //get frequency data
-             d3.json("data/termsfrequency.json", function (data) {
-                 var termsData = data;
-                 data.forEach(function (d) {
-                     allTerms.put(d.term, d.properties)
-                 });
-                 var temp = allTerms.entries();
-                 temp.sort(function (a, b) {
-                     return b[1].frequency - a[1].frequency;
-                 })
-                 //
-                 //get top 50 terms
-                 topTerms = temp.slice(0, 50)
-                 var fill = d3.scale.category20();
-                 var sizeScale = d3.scale.linear()
-                         .domain([250, d3.max(topTerms, function (d) { return d[1].frequency })])
-                         .range([5, 85]);
-                 var layout = d3.layout.cloud()
-                     .size([600, 500])
-                     .words(topTerms.map(function (d) {
-                         return { text: d[0], size: d[1].frequency / 15, frequency: d[1].frequency };
-                     }))
-                     .padding(5)
-                     .rotate(function () { return ~~(Math.random() * 2) * 90; })
-                     .font("Impact")
-                     .fontSize(function (d) { return sizeScale(d.frequency); })
-                     .on("end", draw)
+
+                    //map
 
 
-                 layout.start();
+  
 
-                 function draw(words) {
 
-                     svg.selectAll("text")
-                       .data(words)
-                     .enter().append("text")
-                       .style("font-size", function (d) { return d.size + "px"; })
-                       .style("font-family", "Impact")
-                       .style("fill", function (d, i) { return fill(i); })
-                         .style("cursor", "pointer")
-                         .style("pointer-events", "all")
-                       .attr("text-anchor", "middle")
-                       .attr("transform", function (d) {
-                           return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                       })
-                         .attr("class", "cloud-terms")
-                         .text(function (d) { return d.text; })
+        });
+        $("#next").on("click", function (d) {
+          //  start = parse.parse("2004 01");
+          //  end = parse.parse("2015 12");
+           // var topTerms = getTopTerms();
+           // showNewWords(myWordCloud, topTerms);
+        })
+        function showNewWords(vis, words) {
+             vis.update(words)
+        }
+
+        //getTopTerms based on start and end dates
+        function getTopTerms() {
+            var monthlyData = [];
+            var temp = allTerms.entries();
+            var topTerms;
+            temp.forEach(function (d) {
+                var months = d[1].monthfreq;
+                var freq = 0;
+                for (var i = 0; i < months.length; i++) {
+                    if (parse.parse(months[i].month) >= start && parse.parse(months[i].month) <= end)
+                        freq = freq + months[i].freq;
+                }
+                monthlyData.push({ "term": d[0], "freq": freq });
+            });
+
+            monthlyData.sort(function (a, b) {
+                return b.freq - a.freq;
+            })
+            //
+            //get top 50 terms
+            topTerms = monthlyData.slice(0, 50)
+           
+            return topTerms;
+        }
+
+        // Encapsulate the word cloud functionality
+        function wordCloud(selector) {
+
+            //Draw the word cloud
+            function draw(words) {
+
+                var cloud = svg.selectAll("g text")
+                        .data(words, function (d) { return d.text; })
+
+                //Entering words
+                cloud
+                        .enter().append("text")
+                        .style("font-size", function (d) {
+                            return d.size + "px";
+                        })
+                        .style("font-family", "Impact")
+                        .style("fill", function (d, i) {
+                           
+                            return fill(i);
+
+                        })
+                        .style("cursor", "pointer")
+                        .style("pointer-events", "all")
+                        .attr("text-anchor", "middle")
+                        .attr("transform", function (d) {
+                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .attr("class", "cloud-terms")
+                        .text(function (d) { return d.text; })
                         .on("mousemove", function (d) {
                             //  d3.select(this).attr("opacity", "0.6");
                             wordTip.show(d);
@@ -145,31 +243,148 @@
                                         else
                                             return fill(i);
                                     })
-                            //get Month Freq 
-                            $("#overviewTimeline").empty();
-                            $("#overviewTimeline").append("Selected word :" + d.text + "</br>");
-                            var result = getMonthFreq(d.text);
+                            //get Month Freq
+                            $("#timeline").empty();
+                            $("#timeline").append("Selected word :" + d.text + "</br>");
+                            $("#timeline").append("Total Frequency :" + d.frequency + "</br>");
+                           var result = getMonthFreq(d.text);
                             result.forEach(function (d) {
-                                $("#overviewTimeline").append(d.month + " " + d.freq.toString() + "</br>");
-                            })
+                                $("#timeline").append(d.month + " " + d.freq.toString() + "</br>");
+                           })
                         })
+                //Entering and existing words
+                cloud
+                        .transition()
+                        .duration(100)
+                        .style("font-size", function (d) { return d.size + "px"; })
+                        .attr("transform", function (d) {
+                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .style("fill-opacity", 1);
+
+                //Exiting words
+                cloud.exit()
+                        .transition()
+                        .duration(200)
+                        .style('fill-opacity', 1e-6)
+                        .attr('font-size', 1)
+                        .remove();
+
+            }
 
 
-                 }
+
+            return {
+
+                update: function (words) {
+                    if ($("#tagCloud").width() > 430)
+                        sizeScale.range([5, 80]);
+                    else
+                        sizeScale.range([4, 60]);
+                    sizeScale.domain([d3.min(words, function (d) { return d.freq }), d3.max(words, function (d) { return d.freq })])
+
+                    d3.layout.cloud().size([cloudWidth, cloudHeight])
+                            .timeInterval(Infinity)
+                            .words(words.map(function (d) {
+                                return { text: d.term, size: sizeScale(d.freq), frequency: d.freq };
+                            }))
+                            .padding(5)
+                            .rotate(function () { return ~~(Math.random() * 2) * 90; })
+                            .font("Impact")
+                            .fontSize(function (d) {
+                                return d.size
+                            })
+                            .on("end", draw)
+                            .start();
+                }
+            }
+
+        }
+
+        function getMonthFreq(term) {
+            var termDetails = allTerms.get(term);
+            var result = [];
+            var Months = termDetails.monthfreq;
+ 
+            Months.forEach(function (d) {
+                if(parse.parse(d.month)>=start && parse.parse(d.month)<=end)
+                result.push({ "month": d.month, "freq": d.freq })
+            });
+            return result;
+
+        }
+        function display() {
+            $("#tagCloud").addClass("loading");
+            setTimeout(function () {
+                test();
+                svg.selectAll(".cloud-terms").style("fill", function (d, i) {
+
+                    return fill(i);
+
+                })
+                $("#tagCloud").removeClass("loading");
+            },5);
+           
+        }
+        function test() {
+            start = brush.extent()[0];
+            end = brush.extent()[1];
+            $("#range").text(start.getMonth() + " " + start.getFullYear() + " TO " + end.getMonth() + " " + end.getFullYear());
+            var topTerms = getTopTerms();
+            showNewWords(myWordCloud, topTerms);
+        }
+    
+}
+</script>
+  <script>
+      var map;
+      var geocoder;
+
+      function geocodeAddress() {
+  var address=document.getElementById('val').value;
+        //var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+           map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+
+      function initMap() {
+
+        debugger;
+
+        var myLatLng = {lat: -25.363, lng: 131.044};
+
+        map = new google.maps.Map(document.getElementById('timeline'), {
+          //zoom: 4,
+          //center: myLatLng
+         // center: {lat: -34.397, lng: 150.644}
+         center: new google.maps.LatLng(0, 0),
+             zoom: 2,
+            // minZoom: 1
+        });
+
+   geocoder = new google.maps.Geocoder();
 
 
-             });
-         });
-         function getMonthFreq(term) {
-             var termDetails = allTerms.get(term);
-             var result = [];
-             var Months = termDetails.monthfreq;
-             $("#overviewTimeline").append("Total Frequency :" + termDetails.frequency + "</br>");
-             Months.forEach(function (d) {
-                 result.push({ "month": d.month, "freq": d.freq })
-             });
-             return result;
 
-         }
-     }
+      /*  map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644
+          },
+          zoom: 8
+        });*/
+      }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA14k1mdqVFPLtJT7PjyXOfIlIpoqWFZY4&callback=initMap"
+    async defer></script>
+
+    </body>
+
+
