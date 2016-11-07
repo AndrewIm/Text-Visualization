@@ -118,7 +118,8 @@
                         .x(function(d){ return d.month; })
                         .y(function(d){ return d.freq; });
           
-            // Fills in missing dates in 'data'.
+            // Fills in missing dates in 'data'. 'data' must be non-empty.
+            // Assumes that 'data' is sorted by date in reverse-chronological order.
             function fillData(data, startDate, endDate) {
               var d = [],
                   len = data.length,
@@ -154,31 +155,38 @@
               d[1].monthfreq = fillData(d[1].monthfreq, startDate, endDate);
             });
           
+            // An array of dates in which all frequencies are zero. Used to hide a term
+            // in the streamgraph (as opposed to completely deleting it).
             var zeroSeries = [{freq: 0, month: endDate}];
             zeroSeries = fillData(zeroSeries, startDate, endDate);
             
+            // Define dimensions.
             var margin = {top: 20, right: 0, bottom: 30, left: 40};
             var svgWidth = $("#timeline").width();
             var svgHeight = $("#timeline").height();
             var width = svgWidth * 0.95 - margin.left - margin.right;
             var height = svgHeight - margin.bottom - margin.top;
           
+            // Define scales.
             var timelineX = d3.time.scale()
                 .range([0, width]);
           
             var timelineY = d3.scale.linear()
                 .range([height, 0]);
           
+            // Define axes.
             var xAxis = d3.svg.axis()
                 .scale(timelineX)
                 .orient("bottom")
-                .ticks(5);
+                .ticks(5)
+                .tickFormat(d3.time.format("%b '%y"));
             
             var yAxis = d3.svg.axis()
                 .scale(timelineY)
                 .orient("left")
                 .ticks(7);
           
+            // Define stacked areas and lines that separate the areas.
             var area = d3.svg.area()
                 .interpolate("cardinal")
                 .x(function(d) { return timelineX(d.month); })
@@ -204,8 +212,8 @@
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
           
-            var defs = timeline.append("defs");
-          
+            // Define a clip path to prevent the graph from going out of its region on zoom.
+            var defs = timeline.append("defs");          
             defs.append("clipPath")
                 .attr("id", "sideClip")
               .append("rect")
@@ -213,6 +221,7 @@
                 .attr("width", width)
                 .attr("height", height + margin.top);
           
+            // Stacked layers.
             timeline.selectAll(".layer")
                 .data(layers)
               .enter().append("path")
@@ -220,6 +229,7 @@
                 .attr("class", "layer")
                 .call(updateLayer);
           
+            // Lines separating stacked layers.
             timeline.selectAll(".layerLine")
                 .data(layers)
               .enter().append("path")
@@ -227,6 +237,8 @@
                 .attr("class", "layerLine")
                 .call(updateLayerLine);
           
+            // Zoom demo.
+            /*
             endDate.setYear(2005);
             timelineX.domain([endDate, startDate]);
           
@@ -250,12 +262,15 @@
             timeline.append("g")
                 .attr("class", "y axis")
                 .call(yAxis);
+            */
           
+            // Updates the stacked layers with their current data.
             function updateLayer() {
               this.attr("d", function(d) { return area(d[1].monthfreq); })
                 .style("fill", function(d, i) { return fill(i); });
             }
-          
+            
+            // Updates the lines with their current data.
             function updateLayerLine() {
               this.attr("d", function(d) { return line(d[1].monthfreq); });
             }
