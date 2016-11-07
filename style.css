@@ -58,3 +58,17 @@ body {
 .inactive {
   display: none;
 }
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}  
+
+.layerLine { 
+    stroke: black;
+    stroke-width: 0.02;
+    fill: none;
+  }
