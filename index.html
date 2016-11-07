@@ -203,22 +203,33 @@
                 .attr("height", svgHeight)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                      
+          
+            var defs = timeline.append("defs");
+          
+            defs.append("clipPath")
+                .attr("id", "sideClip")
+              .append("rect")
+                .attr("transform", "translate(0,-" + margin.top + ")")
+                .attr("width", width)
+                .attr("height", height + margin.top);
+          
             timeline.selectAll(".layer")
                 .data(layers)
               .enter().append("path")
+                .attr("clip-path", "url(#sideClip)")
                 .attr("class", "layer")
                 .call(updateLayer);
           
             timeline.selectAll(".layerLine")
                 .data(layers)
               .enter().append("path")
+                .attr("clip-path", "url(#sideClip)")
                 .attr("class", "layerLine")
                 .call(updateLayerLine);
           
-            topTerms[15][1].monthfreq = zeroSeries;
+            endDate.setYear(2005);
+            timelineX.domain([endDate, startDate]);
           
-            layers = stack(topTerms);
             timeline.selectAll(".layer")
                 .data(layers)
                 .transition()
