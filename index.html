@@ -172,6 +172,13 @@
   var timelineX
   var timelineY;
   var xAxis, yAxis;
+
+  // Method for creating stack layout.
+  stack = d3.layout.stack().offset("wiggle")
+              .values(function (d) { return d.monthfreq; })
+              .x(function (d) { return d.month; })
+              .y(function (d) { return d.freq; });
+  
   //Mouse click delay variables
   var DELAY = 300, clicks = 0, timer = null;
   //Global Variable to hold the data
@@ -490,14 +497,7 @@
 
   function setStreamGraph() {
     //TODO remove comments
-    // stream code change - Moved the sub functions out of this function to make available for update
-
-    // Create streamgraph timeline.
-    var stack = d3.layout.stack().offset("wiggle")
-                .values(function (d) { return d.monthfreq; })
-                .x(function (d) { return d.month; })
-                .y(function (d) { return d.freq; });
-
+    // stream code change - Moved the sub functions out of this function to make available for update.
 
     startDate = d3.max(topTerms, function (d) {
       var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
@@ -678,15 +678,6 @@
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
     });
 
-    // An array of dates in which all frequencies are zero. Used to hide a term
-    // in the streamgraph (as opposed to completely deleting it).
-    var zeroSeries = [{ freq: 0, month: endDate }];
-    zeroSeries = fillData(zeroSeries, startDate, endDate);
-
-    var stack = d3.layout.stack().offset("wiggle")
-                .values(function (d) { return d.monthfreq; })
-                .x(function (d) { return d.month; })
-                .y(function (d) { return d.freq; });
     layers = stack(topTerms);
     timelineX.domain([endDate, startDate]);
     timelineY.domain([0, d3.max(layers, function (d) {
@@ -711,12 +702,18 @@
         .attr("clip-path", "url(#sideClip)")
         .attr("class", "layerLine")
         .call(updateLayerLine);
+    
+    timeline.selectAll(".layer")
+        .call(updateLayer);
+    
+    timeline.selectAll(".layerLine")
+        .call(updateLayerLine);
 
     // Remove layers that should no longer be there.
     timeline.selectAll(".layer")
-        .data([]).exit().remove();
+        .exit().remove();
     timeline.selectAll(".layerLine")
-        .data([]).exit().remove();
+        .exit().remove();
 
     // Add axes.
 
