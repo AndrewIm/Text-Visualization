@@ -182,6 +182,11 @@
   var hpallTermsMap;
   var hpallTermsArray = [];
 
+  // An array of dates in which all frequencies are zero. Used to hide a term
+  // in the streamgraph (as opposed to completely deleting it).
+  var zeroSeries = [{ freq: 0, month: endDate }];
+  zeroSeries = fillData(zeroSeries, startDate, endDate);
+
   //cloud svg width and height
   var cloudWidth = $("#tagCloud").width();
   var cloudHeight = $("#tagCloud").height();
@@ -508,11 +513,6 @@
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
     });
 
-    // An array of dates in which all frequencies are zero. Used to hide a term
-    // in the streamgraph (as opposed to completely deleting it).
-    var zeroSeries = [{ freq: 0, month: endDate }];
-    zeroSeries = fillData(zeroSeries, startDate, endDate);
-
     // Define dimensions.
     var margin = { top: 20, right: 0, bottom: 30, left: 40 };
     var svgWidth = $("#timeline").width();
@@ -694,13 +694,6 @@
       return localMax;
     })]);
 
-    // remove prev layers.
-    timeline.selectAll(".layer")
-        .data([]).exit().remove();
-    timeline.selectAll(".layerLine")
-        .data([]).exit().remove();
-
-
     // Stacked layers.
     timeline.selectAll(".layer")
         .data(layers)
@@ -718,6 +711,12 @@
         .attr("clip-path", "url(#sideClip)")
         .attr("class", "layerLine")
         .call(updateLayerLine);
+
+    // Remove layers that should no longer be there.
+    timeline.selectAll(".layer")
+        .data([]).exit().remove();
+    timeline.selectAll(".layerLine")
+        .data([]).exit().remove();
 
     // Add axes.
 
