@@ -3,7 +3,7 @@
  */
 function preProcessData() {
     var topTerms = new Hashtable();
-    var allTerms = new Hashtable();
+    //var allTerms = new Hashtable();
     var orgTerms = new Hashtable();
     var personsTerms = new Hashtable();
     var miscTerms = new Hashtable();
@@ -12,46 +12,54 @@ function preProcessData() {
     var wnpersonsTerms = new Hashtable();
     var wnmiscTerms = new Hashtable();
     var wnlocationTerms = new Hashtable();
-
+    var allTerms=new Object();
     var lines = 0;
-    this.start = function (callback) {
-        d3.tsv("data/wikinews.tsv", function (data) {
+    this.startProcess = function (filename,callback) {
+        d3.tsv(filename, function (data) {
 
 
             data.forEach(function (d) {
                 var persons = d.person;
                 var time = d.time;
                 var month = d.time.substring(0, 4) + " " + d.time.substring(5, 7);
-               // ++lines;
+                ++lines;
                 var personsArray = persons.split("|");
                 personsArray.forEach(function (d) {
 
                     if (d != "") {
                         //allTerms consideration.
-                        if (allTerms.containsKey(d) == true) {
-                            var temp = allTerms.get(d);
-                            temp.frequency = temp.frequency + 1;
-                            if (temp.monthfreq.containsKey(month)) {
-                                var val = temp.monthfreq.get(month);
-                                temp.monthfreq.put(month, val + 1);
+                        if(allTerms[d]){
+                            var freq=allTerms[d].frequency;
+                            allTerms[d].frequency=freq+1;
+                            if(allTerms[d][month])
+                            {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
+                            }
+                            else{
+                                allTerms[d][month]=new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
+                            }
+                        }
+                        else{
+                            allTerms[d] = new Object();
+                            allTerms[d].frequency = 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
                             }
                             else {
-                                temp.monthfreq.put(month, 1);
-                            }
-                         //   temp.blogs.push(lines);
-                            allTerms.put(d, temp);
-                        }
-                        else {
-                            var value = {};
-                            value.frequency = 1;
-                            value.monthfreq = new Hashtable();
-                            value.monthfreq.put(month, 1);
-                          //  value.blogs = [];
-                           // value.blogs.push(lines);
-                            // value.category="person"
-                            allTerms.put(d, value);
-                        }
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
 
+                            }
+
+                        }
 
                     }
 
@@ -64,286 +72,305 @@ function preProcessData() {
 
                     if (d != "") {
                         //allTerms consideration.
-                        if (allTerms.containsKey(d) == true) {
-                            var temp = allTerms.get(d);
-                            temp.frequency = temp.frequency + 1;
-                            if (temp.monthfreq.containsKey(month)) {
-                                var val = temp.monthfreq.get(month);
-                                temp.monthfreq.put(month, val + 1);
+                        if (allTerms[d]) {
+                            var freq = allTerms[d].frequency;
+                            allTerms[d].frequency = freq + 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
                             }
                             else {
-                                temp.monthfreq.put(month, 1);
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
                             }
-                            //   temp.blogs.push(lines);
-                            allTerms.put(d, temp);
                         }
                         else {
-                            var value = {};
-                            value.frequency = 1;
-                            value.monthfreq = new Hashtable();
-                            value.monthfreq.put(month, 1);
-                            //  value.blogs = [];
-                            // value.blogs.push(lines);
-                            // value.category="person"
-                            allTerms.put(d, value);
+                            allTerms[d] = new Object();
+                            allTerms[d].frequency = 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
+                            }
+                            else {
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
+                            }
+
                         }
 
-
                     }
+
                 })
 
                 //Misc Terms
                 var misc = d.miscellaneous;
                 var miscArray = misc.split("|");
                 miscArray.forEach(function (d) {
-
                     if (d != "") {
                         //allTerms consideration.
-                        if (allTerms.containsKey(d) == true) {
-                            var temp = allTerms.get(d);
-                            temp.frequency = temp.frequency + 1;
-                            if (temp.monthfreq.containsKey(month)) {
-                                var val = temp.monthfreq.get(month);
-                                temp.monthfreq.put(month, val + 1);
+                        if (allTerms[d]) {
+                            var freq = allTerms[d].frequency;
+                            allTerms[d].frequency = freq + 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
                             }
                             else {
-                                temp.monthfreq.put(month, 1);
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
                             }
-                            //   temp.blogs.push(lines);
-                            allTerms.put(d, temp);
                         }
                         else {
-                            var value = {};
-                            value.frequency = 1;
-                            value.monthfreq = new Hashtable();
-                            value.monthfreq.put(month, 1);
-                            //  value.blogs = [];
-                            // value.blogs.push(lines);
-                            // value.category="person"
-                            allTerms.put(d, value);
+                            allTerms[d] = new Object();
+                            allTerms[d].frequency = 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
+                            }
+                            else {
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
+                            }
+
                         }
 
-
                     }
+
                 })
 
                 //Location Terms
                 var location = d.location;
                 var locationArray = location.split("|");
                 locationArray.forEach(function (d) {
-
                     if (d != "") {
                         //allTerms consideration.
-                        if (allTerms.containsKey(d) == true) {
-                            var temp = allTerms.get(d);
-                            temp.frequency = temp.frequency + 1;
-                            if (temp.monthfreq.containsKey(month)) {
-                                var val = temp.monthfreq.get(month);
-                                temp.monthfreq.put(month, val + 1);
+                        if (allTerms[d]) {
+                            var freq = allTerms[d].frequency;
+                            allTerms[d].frequency = freq + 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
                             }
                             else {
-                                temp.monthfreq.put(month, 1);
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
                             }
-                            //   temp.blogs.push(lines);
-                            allTerms.put(d, temp);
                         }
                         else {
-                            var value = {};
-                            value.frequency = 1;
-                            value.monthfreq = new Hashtable();
-                            value.monthfreq.put(month, 1);
-                            //  value.blogs = [];
-                            // value.blogs.push(lines);
-                            // value.category="person"
-                            allTerms.put(d, value);
+                            allTerms[d] = new Object();
+                            allTerms[d].frequency = 1;
+                            if (allTerms[d][month]) {
+                                allTerms[d][month].freq = allTerms[d][month].freq + 1;
+                                allTerms[d][month].blogs.push(lines);
+                            }
+                            else {
+                                allTerms[d][month] = new Object();
+                                allTerms[d][month].freq = 1;
+                                allTerms[d][month].blogs = [];
+                                allTerms[d][month].blogs.push(lines);
+
+                            }
+
                         }
 
-
                     }
+
                 })
 
             });
 
-
             // huffingpost
-            d3.tsv("data/huffington.tsv", function (data) {
-                data.forEach(function (d) {
-                    var persons = d.person;
-                    ++lines;
-                    var personsArray = persons.split("|");
-                    personsArray.forEach(function (d) {
+            /*  d3.tsv("data/huffington.tsv", function (data) {
+             data.forEach(function (d) {
+             var persons = d.person;
+             ++lines;
+             var personsArray = persons.split("|");
+             personsArray.forEach(function (d) {
 
-                        if (d != "") {
-                            //allTerms consideration.
-                            if (allTerms.containsKey(d) == true) {
-                                var temp = allTerms.get(d);
-                                temp.frequency = temp.frequency + 1;
-                                if (temp.monthfreq.containsKey(month)) {
-                                    var val = temp.monthfreq.get(month);
-                                    temp.monthfreq.put(month, val + 1);
-                                }
-                                else {
-                                    temp.monthfreq.put(month, 1);
-                                }
-                                //   temp.blogs.push(lines);
-                                allTerms.put(d, temp);
-                            }
-                            else {
-                                var value = {};
-                                value.frequency = 1;
-                                value.monthfreq = new Hashtable();
-                                value.monthfreq.put(month, 1);
-                                //  value.blogs = [];
-                                // value.blogs.push(lines);
-                                // value.category="person"
-                                allTerms.put(d, value);
-                            }
-
-
-                        }
-                    })
-
-                    //Organization Terms
-                    var orgs = d.organization;
-                    var orgsArray = orgs.split("|");
-                    orgsArray.forEach(function (d) {
-                        if (d != "") {
-                            //allTerms consideration.
-                            if (allTerms.containsKey(d) == true) {
-                                var temp = allTerms.get(d);
-                                temp.frequency = temp.frequency + 1;
-                                if (temp.monthfreq.containsKey(month)) {
-                                    var val = temp.monthfreq.get(month);
-                                    temp.monthfreq.put(month, val + 1);
-                                }
-                                else {
-                                    temp.monthfreq.put(month, 1);
-                                }
-                                //   temp.blogs.push(lines);
-                                allTerms.put(d, temp);
-                            }
-                            else {
-                                var value = {};
-                                value.frequency = 1;
-                                value.monthfreq = new Hashtable();
-                                value.monthfreq.put(month, 1);
-                                //  value.blogs = [];
-                                // value.blogs.push(lines);
-                                // value.category="person"
-                                allTerms.put(d, value);
-                            }
+             if (d != "") {
+             //allTerms consideration.
+             if (allTerms.containsKey(d) == true) {
+             var temp = allTerms.get(d);
+             temp.frequency = temp.frequency + 1;
+             if (temp.monthfreq.containsKey(month)) {
+             var val = temp.monthfreq.get(month);
+             temp.monthfreq.put(month, val + 1);
+             }
+             else {
+             temp.monthfreq.put(month, 1);
+             }
+             //   temp.blogs.push(lines);
+             allTerms.put(d, temp);
+             }
+             else {
+             var value = {};
+             value.frequency = 1;
+             value.monthfreq = new Hashtable();
+             value.monthfreq.put(month, 1);
+             //  value.blogs = [];
+             // value.blogs.push(lines);
+             // value.category="person"
+             allTerms.put(d, value);
+             }
 
 
-                        }
-                    })
+             }
+             })
 
-                    //Misc Terms
-                    var misc = d.miscellaneous;
-                    var miscArray = misc.split("|");
-                    miscArray.forEach(function (d) {
-                        if (d != "") {
-                            //allTerms consideration.
-                            if (allTerms.containsKey(d) == true) {
-                                var temp = allTerms.get(d);
-                                temp.frequency = temp.frequency + 1;
-                                if (temp.monthfreq.containsKey(month)) {
-                                    var val = temp.monthfreq.get(month);
-                                    temp.monthfreq.put(month, val + 1);
-                                }
-                                else {
-                                    temp.monthfreq.put(month, 1);
-                                }
-                                //   temp.blogs.push(lines);
-                                allTerms.put(d, temp);
-                            }
-                            else {
-                                var value = {};
-                                value.frequency = 1;
-                                value.monthfreq = new Hashtable();
-                                value.monthfreq.put(month, 1);
-                                //  value.blogs = [];
-                                // value.blogs.push(lines);
-                                // value.category="person"
-                                allTerms.put(d, value);
-                            }
-
-
-                        }
-                    })
-
-                    //Location Terms
-                    var location = d.location;
-                    var locationArray = location.split("|");
-                    locationArray.forEach(function (d) {
-                        if (d != "") {
-                            //allTerms consideration.
-                            if (allTerms.containsKey(d) == true) {
-                                var temp = allTerms.get(d);
-                                temp.frequency = temp.frequency + 1;
-                                if (temp.monthfreq.containsKey(month)) {
-                                    var val = temp.monthfreq.get(month);
-                                    temp.monthfreq.put(month, val + 1);
-                                }
-                                else {
-                                    temp.monthfreq.put(month, 1);
-                                }
-                                //   temp.blogs.push(lines);
-                                allTerms.put(d, temp);
-                            }
-                            else {
-                                var value = {};
-                                value.frequency = 1;
-                                value.monthfreq = new Hashtable();
-                                value.monthfreq.put(month, 1);
-                                //  value.blogs = [];
-                                // value.blogs.push(lines);
-                                // value.category="person"
-                                allTerms.put(d, value);
-                            }
+             //Organization Terms
+             var orgs = d.organization;
+             var orgsArray = orgs.split("|");
+             orgsArray.forEach(function (d) {
+             if (d != "") {
+             //allTerms consideration.
+             if (allTerms.containsKey(d) == true) {
+             var temp = allTerms.get(d);
+             temp.frequency = temp.frequency + 1;
+             if (temp.monthfreq.containsKey(month)) {
+             var val = temp.monthfreq.get(month);
+             temp.monthfreq.put(month, val + 1);
+             }
+             else {
+             temp.monthfreq.put(month, 1);
+             }
+             //   temp.blogs.push(lines);
+             allTerms.put(d, temp);
+             }
+             else {
+             var value = {};
+             value.frequency = 1;
+             value.monthfreq = new Hashtable();
+             value.monthfreq.put(month, 1);
+             //  value.blogs = [];
+             // value.blogs.push(lines);
+             // value.category="person"
+             allTerms.put(d, value);
+             }
 
 
-                        }
-                    })
+             }
+             })
 
-                });
+             //Misc Terms
+             var misc = d.miscellaneous;
+             var miscArray = misc.split("|");
+             miscArray.forEach(function (d) {
+             if (d != "") {
+             //allTerms consideration.
+             if (allTerms.containsKey(d) == true) {
+             var temp = allTerms.get(d);
+             temp.frequency = temp.frequency + 1;
+             if (temp.monthfreq.containsKey(month)) {
+             var val = temp.monthfreq.get(month);
+             temp.monthfreq.put(month, val + 1);
+             }
+             else {
+             temp.monthfreq.put(month, 1);
+             }
+             //   temp.blogs.push(lines);
+             allTerms.put(d, temp);
+             }
+             else {
+             var value = {};
+             value.frequency = 1;
+             value.monthfreq = new Hashtable();
+             value.monthfreq.put(month, 1);
+             //  value.blogs = [];
+             // value.blogs.push(lines);
+             // value.category="person"
+             allTerms.put(d, value);
+             }
 
-            });
 
-            var allTermsEntries = allTerms.entries();
+             }
+             })
+
+             //Location Terms
+             var location = d.location;
+             var locationArray = location.split("|");
+             locationArray.forEach(function (d) {
+             if (d != "") {
+             //allTerms consideration.
+             if (allTerms.containsKey(d) == true) {
+             var temp = allTerms.get(d);
+             temp.frequency = temp.frequency + 1;
+             if (temp.monthfreq.containsKey(month)) {
+             var val = temp.monthfreq.get(month);
+             temp.monthfreq.put(month, val + 1);
+             }
+             else {
+             temp.monthfreq.put(month, 1);
+             }
+             //   temp.blogs.push(lines);
+             allTerms.put(d, temp);
+             }
+             else {
+             var value = {};
+             value.frequency = 1;
+             value.monthfreq = new Hashtable();
+             value.monthfreq.put(month, 1);
+             //  value.blogs = [];
+             // value.blogs.push(lines);
+             // value.category="person"
+             allTerms.put(d, value);
+             }
+
+
+             }
+             })
+
+             });
+
+             });*/
+
+          /*  //  var allTermsEntries = allTerms.entries();
             var allTermsJson = [];
-            allTermsEntries.forEach(function (d) {
+            for(var entry in allTerms){
                 var jsonEntry = {}
-                jsonEntry.term = d[0];
+                jsonEntry.term = entry;
                 jsonEntry.properties = {};
-                jsonEntry.properties.frequency = d[1].frequency;
+                jsonEntry.properties.frequency = allTerms[entry].frequency;
                 jsonEntry.properties.monthfreq = [];
                 var month = d[1].monthfreq.entries();
                 month.forEach(function (r) {
                     jsonEntry.properties.monthfreq.push({ month: r[0], freq: r[1] })
                 })
                 allTermsJson.push(jsonEntry);
-                    
+
+            }
+            allTerms.forEach(function (d) {
+
             })
-            var finalJson = JSON.stringify(allTermsJson);
+            var finalJson = JSON.stringify(allTerms);
+
+*/
 
 
-           // var downloadData = 'data:text/json;charset=utf-8,' + finalJson;
-          ////  var url = URL.createObjectURL(new Blob([finalJson], { type: 'text/plain' }));
-          //  var data = encodeURI(downloadData);
-
-          //  link = document.createElement('a');
-          //  link.setAttribute('href', data);
-          //  link.setAttribute('download', filename);
-          //  link.click();
             //
 
-            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allTermsJson));
-            var url = URL.createObjectURL(new Blob([finalJson], { type: 'text/json' }));
+
+         /*   var url = URL.createObjectURL(new Blob([finalJson], { type: 'text/json' }));
             var dlAnchorElem = document.createElement('a');
             dlAnchorElem.setAttribute("href", url);
-            dlAnchorElem.setAttribute("download", "termsfrequency.json");
-            dlAnchorElem.click();
-            callback();
+            dlAnchorElem.setAttribute("download", "hp_termsfrequency.json");
+            dlAnchorElem.click();*/
+            callback(allTerms);
+            console.log(lines);
 
         });
 
