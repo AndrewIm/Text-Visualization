@@ -590,6 +590,8 @@
         .x(function (d) { return timelineX(d.month); })
         .y(function (d) { return timelineY(d.y0); });
 
+    // TODO: Sort topTerms by category.
+    
     layers = stack(topTerms);
 
     timelineX.domain([endDate, startDate]);
