@@ -17,18 +17,24 @@ body {
 
 #options {
   padding: 15px;
+  width: 100%;
+}
+
+#left {
+  float: left;
+  width: 35%;
 }
 
 #tagCloud {
   height: 85%;
-  width: 35%;
+  width: 100%;
   padding: 1%;
   margin: 0px;
 }
 
 #timeline {
   float: right;
-  height: 85%;
+  height: 100%;
   width: 60%;
   margin: 0px;
   background: #ddd;
@@ -37,7 +43,7 @@ body {
 
 #relationshipChart {
   height: 85%;
-  width: 35%;
+  width: 100%;
   background: #F00;
   margin: 0px;
 }
