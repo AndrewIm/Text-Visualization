@@ -40,8 +40,8 @@
         <div id="topOptions">
           <div id="sourceSelection">
             <h5>Source:</h5>
-            &ensp;<input type="radio" name="Source" id="wiki" checked onclick="setSource('wiki')"> Wikinews<br>
-            &ensp;<input type="radio" name="Source" id="HP" onclick="setSource('hp')"> Huffington Post<br>
+            &ensp;<input type="radio" name="Source" id="wiki" checked> Wikinews<br>
+            &ensp;<input type="radio" name="Source" id="HP"> Huffington Post<br>
           </div>
           <div id="intervalSelection">
             <h5>Time Period:</h5>
@@ -487,6 +487,12 @@
   }
 
   function updateData() {
+    if ($("#wiki").is(":checked")) {
+      setSource("wiki");
+    } else {
+      setSource("hp");
+    }
+    
     start = parse.parse($('#fromYear').val() + " " + $('#fromMonth').val());
     end = parse.parse($('#toYear').val() + " " + $('#toMonth').val());
     $("#tagCloud").addClass("loading");
