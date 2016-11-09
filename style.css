@@ -26,12 +26,14 @@ h5 {
 
 #options {
   padding: 15px;
-  width: 100%;
 }
 
 #topOptions {
-  display: block;
-  width: 100%;
+  display: inline-block;
+}
+
+#bottomOptions {
+  display: inline-block;
 }
 
 #sourceSelection {
@@ -56,6 +58,13 @@ h5 {
 
 #numberTermsSelection {
   float:left;
+  display: inline-block;
+  padding-right: 10px;
+}
+
+#updateButtonContainer {
+  float: left;
+  display: inline-block;
 }
 
 #left {
