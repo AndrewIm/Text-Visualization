@@ -686,9 +686,9 @@
     })]);
 
     // Stacked layers.
-    timeline.selectAll(".layer")
-        .data(layers)
-      .enter().append("path")
+    var stackLayers = timeline.selectAll(".layer")
+        .data(layers);
+    stackLayers.enter().append("path")
         .attr("clip-path", "url(#sideClip)")
         .attr("class", "layer")
         .call(updateLayer)
@@ -696,9 +696,9 @@
         .on("mouseout", unhighlightLayer);
 
     // Lines separating stacked layers.
-    timeline.selectAll(".layerLine")
-        .data(layers)
-      .enter().append("path")
+    var layerLines = timeline.selectAll(".layerLine")
+        .data(layers);
+    layerLines.enter().append("path")
         .attr("clip-path", "url(#sideClip)")
         .attr("class", "layerLine")
         .call(updateLayerLine);
@@ -710,10 +710,8 @@
         .call(updateLayerLine);
 
     // Remove layers that should no longer be there.
-    timeline.selectAll(".layer")
-        .exit().remove();
-    timeline.selectAll(".layerLine")
-        .exit().remove();
+    stackLayers.exit().remove();
+    layerLines.exit().remove();
 
     // Add axes.
 
