@@ -393,7 +393,7 @@
                                 return fill(i);
                             });
                     
-                    var topTerms = getTopTerms();
+                    stack = stack.offset("wiggle");
                     
                     var startDate = minDate(topTerms);
                     
@@ -404,10 +404,13 @@
                       if (d1.tempValues == undefined) {
                         d1.tempValues = d1.monthfreq;
                       }
-                      if (!d.active && d1.term == d.text) {
-                        d1.monthfreq = fillData([{ freq:0, month: minDate }], endDate, startDate);
-                      } else {
-                        d1.monthfreq = d1.tempValues;
+                      if (d1.term == d.text) {
+                        // If this element is the one that needs to be changed.
+                        if (d.active == false) {
+                          d1.monthfreq = fillData([{ freq:0, month: startDate }], endDate, startDate);
+                        } else {
+                          d1.monthfreq = d1.tempValues;
+                        }
                       }
                     });
                     
@@ -432,6 +435,27 @@
                             else
                               return "grey";
                           })
+                  
+                  stack = stack.offset("silhouette");
+                    
+                  var startDate = minDate(topTerms);
+
+                  var endDate = maxDate(topTerms);
+
+                  // Hide/show the corresponding layer in the timeline.
+                  topTerms.forEach(function(d1) {
+                    if (d1.tempValues == undefined) {
+                      d1.tempValues = d1.monthfreq;
+                    }
+                    if (d1.term != d.text) {
+                      d1.monthfreq = fillData([{ freq:0, month: minDate }], endDate, startDate);
+                    } else {
+                      d1.monthfreq = d1.tempValues;
+                    }
+                  });
+
+                  updateStreamGraph(topTerms, true);
+                  
                   clicks = 0;             //after action performed, reset counter
                 }
 
