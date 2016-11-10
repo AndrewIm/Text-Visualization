@@ -464,7 +464,7 @@
                               if (d1.active == undefined || d1.active == false)
                                 return "grey";
                               else
-                                return fill(i);
+                                return getColor(d1.category, d1.text);
                             })
                     clicks = 0;             //after action performed, reset counter
 
@@ -479,7 +479,7 @@
                             d1.active = false;
                             if (d.text == d1.text) {
                               d1.active = true;
-                              return fill(i);
+                              return getColor(d1.category, d1.text);
                             }
 
                             else
@@ -568,11 +568,9 @@
     $("#tagCloud").addClass("loading");
     setTimeout(function () {
       updateVisualization();
-      /*svg.selectAll(".cloud-terms").style("fill", function (d, i) {
-
-       return fill(i);
-
-       })*/
+      svg.selectAll(".cloud-terms").style("fill", function (d, i) {
+        return getColor(d.category, d.text);
+      })
       $("#tagCloud").removeClass("loading");
     }, 0);
 
@@ -588,7 +586,7 @@
       updateVisualization();
       svg.selectAll(".cloud-terms").style("fill", function (d, i) {
 
-        return fill(i);
+        return getColor(d.category, d.term);
 
       })
       $("#tagCloud").removeClass("loading");
