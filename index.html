@@ -163,19 +163,11 @@
       source = "wn";
       allTermsArray = wnallTermsArray;
       allTermsMap = wnallTermsMap;
-      topTerms = getTopTerms();
-      showNewWords(myWordCloud, topTerms);
-      //update stream graph, topterms.monthfreq contains monthly frequency
-      updateStreamGraph(topTerms)
     }
     else {
       source = "hp"
       allTermsArray = hpallTermsArray;
       allTermsMap = hpallTermsMap;
-      topTerms = getTopTerms();
-      showNewWords(myWordCloud, topTerms);
-      //update stream graph, topterms.monthfreq contains monthly frequency
-      updateStreamGraph(topTerms)
     }
 
   }
