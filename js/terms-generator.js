@@ -46,6 +46,7 @@ function preProcessData() {
             else {
               allTerms[d] = new Object();
               allTerms[d].frequency = 1;
+              allTerms[d].category = "Person";
               if (allTerms[d][month]) {
                 allTerms[d][month].freq = allTerms[d][month].freq + 1;
                 allTerms[d][month].blogs.push(lines);
@@ -89,6 +90,7 @@ function preProcessData() {
             else {
               allTerms[d] = new Object();
               allTerms[d].frequency = 1;
+              allTerms[d].category = "Organization";
               if (allTerms[d][month]) {
                 allTerms[d][month].freq = allTerms[d][month].freq + 1;
                 allTerms[d][month].blogs.push(lines);
@@ -131,6 +133,7 @@ function preProcessData() {
             else {
               allTerms[d] = new Object();
               allTerms[d].frequency = 1;
+              allTerms[d].category = "Misc";
               if (allTerms[d][month]) {
                 allTerms[d][month].freq = allTerms[d][month].freq + 1;
                 allTerms[d][month].blogs.push(lines);
@@ -173,6 +176,7 @@ function preProcessData() {
             else {
               allTerms[d] = new Object();
               allTerms[d].frequency = 1;
+              allTerms[d].category = "Location";
               if (allTerms[d][month]) {
                 allTerms[d][month].freq = allTerms[d][month].freq + 1;
                 allTerms[d][month].blogs.push(lines);
@@ -338,36 +342,36 @@ function preProcessData() {
        });*/
 
       /*  //  var allTermsEntries = allTerms.entries();
-        var allTermsJson = [];
-        for(var entry in allTerms){
-            var jsonEntry = {}
-            jsonEntry.term = entry;
-            jsonEntry.properties = {};
-            jsonEntry.properties.frequency = allTerms[entry].frequency;
-            jsonEntry.properties.monthfreq = [];
-            var month = d[1].monthfreq.entries();
-            month.forEach(function (r) {
-                jsonEntry.properties.monthfreq.push({ month: r[0], freq: r[1] })
-            })
-            allTermsJson.push(jsonEntry);
+       var allTermsJson = [];
+       for(var entry in allTerms){
+       var jsonEntry = {}
+       jsonEntry.term = entry;
+       jsonEntry.properties = {};
+       jsonEntry.properties.frequency = allTerms[entry].frequency;
+       jsonEntry.properties.monthfreq = [];
+       var month = d[1].monthfreq.entries();
+       month.forEach(function (r) {
+       jsonEntry.properties.monthfreq.push({ month: r[0], freq: r[1] })
+       })
+       allTermsJson.push(jsonEntry);
 
-        }
-        allTerms.forEach(function (d) {
+       }
+       allTerms.forEach(function (d) {
 
-        })
-        var finalJson = JSON.stringify(allTerms);
+       })
+       var finalJson = JSON.stringify(allTerms);
 
-*/
+       */
 
 
       //
 
 
       /*   var url = URL.createObjectURL(new Blob([finalJson], { type: 'text/json' }));
-         var dlAnchorElem = document.createElement('a');
-         dlAnchorElem.setAttribute("href", url);
-         dlAnchorElem.setAttribute("download", "hp_termsfrequency.json");
-         dlAnchorElem.click();*/
+       var dlAnchorElem = document.createElement('a');
+       dlAnchorElem.setAttribute("href", url);
+       dlAnchorElem.setAttribute("download", "hp_termsfrequency.json");
+       dlAnchorElem.click();*/
       callback(allTerms);
       console.log(lines);
 
@@ -410,7 +414,7 @@ function preProcessData() {
     var result = [];
     var Months = termDetails.monthfreq;
     Months.each(function (key, value) {
-      result.push({ "month": key, "freq": value })
+      result.push({"month": key, "freq": value})
     });
     return result;
     //allTerms.each(function (key, value) {
