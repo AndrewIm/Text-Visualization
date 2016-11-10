@@ -570,7 +570,7 @@
   function updateVisualization() {
 
     $("#range").text(start.getMonth() + " " + start.getFullYear() + " TO " + end.getMonth() + " " + end.getFullYear());
-    var topTerms = getTopTerms();
+    topTerms = getTopTerms();
     showNewWords(myWordCloud, topTerms);
     //update stream graph, topterms.monthfreq contains monthly frequency
     updateStreamGraph(topTerms, false);
