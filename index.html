@@ -377,7 +377,24 @@
                                 return "grey";
                               else
                                 return fill(i);
-                            })
+                            });
+                    
+                    var topTerms = getTopTerms();
+                    
+                    // Hide/show the corresponding layer in the timeline.
+                    topTerms.forEach(function(d1) {
+                      if (d1.tempValues == undefined) {
+                        d1.tempValues = d1.monthfreq;
+                      }
+                      if (!d.active && d1.term == d.text) {
+                        d1.monthfreq = fillData([{ freq:0, month: start }], end, start);
+                      } else {
+                        d1.monthfreq = d1.tempValues;
+                      }
+                    });
+                    
+                    updateStreamGraph(topTerms, true);
+                    
                     clicks = 0;             //after action performed, reset counter
 
                   }, DELAY);
@@ -514,7 +531,7 @@
     var topTerms = getTopTerms();
     showNewWords(myWordCloud, topTerms);
     //update stream graph, topterms.monthfreq contains monthly frequency
-    updateStreamGraph(topTerms)
+    updateStreamGraph(topTerms, false);
   }
 
   function setStreamGraph() {
@@ -534,6 +551,9 @@
     topTerms.forEach(function (d) {
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
     });
+    
+    zeroSeries = [{ freq: 0, month: endDate }];
+    zeroSeries = fillData(zeroSeries, startDate, endDate);
 
     // Define dimensions.
     var margin = { top: 20, right: 0, bottom: 30, left: 40 };
@@ -665,21 +685,21 @@
 
   // Fills in missing dates in 'data'. 'data' must be non-empty.
   // Assumes that 'data' is sorted by date in reverse-chronological order.
-  function fillData(data, startDate, endDate) {
+  function fillData(data, endDate, startDate) {
     var d = [],
         len = data.length,
         now = new Date(startDate),
         last = new Date(endDate),
-        iterator = len - 1,
+        iterator = 0,
         y;
 
-    while (now >= last) {
+    while (now <= last) {
       y = 0;
       try {
         // stream code change - changed logic as the data has months in ascending order
-        if (iterator >= 0 && now.getTime() == new Date(data[iterator].month).getTime()) {
+        if (iterator < len && now.getTime() == new Date(data[iterator].month).getTime()) {
           y = data[iterator].freq;
-          --iterator;
+          ++iterator;
         }
       }
       catch (exc) {
@@ -687,13 +707,13 @@
         debugger;
       }
       d.push({ "month": new Date(now), "freq": y });
-      now["setMonth"](now.getMonth() - 1);
+      now["setMonth"](now.getMonth() + 1);
     }
 
     return d;
   }
 
-  function updateStreamGraph(topTerms) {
+  function updateStreamGraph(topTerms, hasTransition) {
     startDate = d3.max(topTerms, function (d) {
       var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
       return localMax;
@@ -736,11 +756,21 @@
         .attr("class", "layerLine")
         .call(updateLayerLine);
     
-    timeline.selectAll(".layer")
+    if (hasTransition) {
+      timeline.selectAll(".layer")
+          .transition()
+          .call(updateLayer);
+
+      timeline.selectAll(".layerLine")
+          .transition()
+          .call(updateLayerLine);
+    } else {
+      timeline.selectAll(".layer")
         .call(updateLayer);
     
-    timeline.selectAll(".layerLine")
-        .call(updateLayerLine);
+      timeline.selectAll(".layerLine")
+          .call(updateLayerLine);
+    }
 
     // Remove layers that should no longer be there.
     stackLayers.exit().remove();
