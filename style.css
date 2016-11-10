@@ -7,6 +7,15 @@ body {
   padding-top: 1%;
 }
 
+body, table {
+  font: 12px Arial;
+}
+
+h5 {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
 #visualizations {
   height: 90%;
   padding:15px;
@@ -19,16 +28,60 @@ body {
   padding: 15px;
 }
 
+#topOptions {
+  display: inline-block;
+}
+
+#bottomOptions {
+  display: inline-block;
+}
+
+#sourceSelection {
+  float: left;
+  display: inline-block;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+#intervalSelection {
+  float: left;
+  display: inline-block;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+#chartSelection {
+  float: left;
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+#numberTermsSelection {
+  float:left;
+  display: inline-block;
+  padding-right: 10px;
+}
+
+#updateButtonContainer {
+  float: left;
+  display: inline-block;
+}
+
+#left {
+  float: left;
+  width: 35%;
+}
+
 #tagCloud {
   height: 85%;
-  width: 35%;
+  width: 100%;
   padding: 1%;
   margin: 0px;
 }
 
 #timeline {
   float: right;
-  height: 85%;
+  height: 100%;
   width: 60%;
   margin: 0px;
   background: #ddd;
@@ -37,7 +90,7 @@ body {
 
 #relationshipChart {
   height: 85%;
-  width: 35%;
+  width: 100%;
   background: #F00;
   margin: 0px;
 }

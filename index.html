@@ -12,18 +12,11 @@
   <link rel="stylesheet" href="css/app.css">
   <script>
     $(document).ready(function () {
-      $('#showRelationships').on('click', function () {
-        var isChecked = $(this).prop("checked");
-
-        // If checked, hide tag cloud and show relationships.  If not, then hide relationships and show tag cloud.
-        if (isChecked) {
-          $("#tagCloud").removeClass("active").addClass("inactive");
-          $("#relationshipChart").addClass("active").removeClass("inactive");
-          $("#termRelationship").attr("disabled", false);
+      $(document.getElementsByName("chartType")).on('click', function () {
+        if (this.id == "overview") {
+          $("#relationshipTerm").attr("disabled", true);
         } else {
-          $("#tagCloud").addClass("active").removeClass("inactive");
-          $("#relationshipChart").removeClass("active").addClass("inactive");
-          $("#termRelationship").attr("disabled", true);
+          $("#relationshipTerm").attr("disabled", false);
         }
       });
     });
@@ -35,73 +28,108 @@
 <body>
   <h1>Text Visualization</h1>
   <div id="visualizations">
-    <div id="options">
-      <input type="checkbox" id="showRelationships">
-      <input type="radio" name="Source" id="wiki" checked onclick="setSource('wiki')">Wikinews
-      <input type="radio" name="Source" id="HP" onclick="setSource('hp')">Huffinton
-      <input type="text" style="width: 40px" id="texttermscount" placeholder="count" value="50">
-      Show Relationships for term:
-            <input type="text" id="termRelationship" disabled><br>
-      <div class="row">
-        <div class="col col-md-6">
-          <select id="fromMonth" placeholder="From Month">
-            <option>01</option>
-            <option>02</option>
-            <option>03</option>
-            <option>04</option>
-            <option>05</option>
-            <option>06</option>
-            <option>07</option>
-            <option>08</option>
-            <option>09</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option>
-          </select>
-          <select id="fromYear" placeholder="From Year">
-            <option>2004</option>
-            <option>2005</option>
-            <option>2006</option>
-            <option>2007</option>
-            <option>2008</option>
-            <option>2009</option>
-            <option>2010</option>
-            <option>2011</option>
-            <option>2012</option>
-            <option>2013</option>
-            <option>2014</option>
-            <option>2015</option>
-          </select>
-          To
-        <select id="toMonth" placeholder="To Month">
-          <option>01</option>
-          <option>02</option>
-          <option>03</option>
-          <option>04</option>
-          <option>05</option>
-          <option>06</option>
-          <option>07</option>
-          <option>08</option>
-          <option>09</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-        </select>
-          <select id="toYear" placeholder="From Year">
-            <option>2004</option>
-            <option>2005</option>
-            <option>2006</option>
-            <option>2007</option>
-            <option>2008</option>
-            <option>2009</option>
-            <option>2010</option>
-            <option>2011</option>
-            <option>2012</option>
-            <option>2013</option>
-            <option>2014</option>
-            <option>2015</option>
-          </select>
-          <button onclick="updateData()">Go</button>
+    <div id="left">
+      <div id="options">
+        <div id="topOptions">
+          <div id="sourceSelection">
+            <h5>Source:</h5>
+            &ensp;<input type="radio" name="Source" id="wiki" checked> Wikinews<br>
+            &ensp;<input type="radio" name="Source" id="HP"> Huffington Post<br>
+          </div>
+          <div id="intervalSelection">
+            <h5>Time Period:</h5>
+            <table>
+              <tr>
+                <td>
+                  &ensp;From: &ensp;
+                </td>
+                <td>
+                  <select id="fromMonth" placeholder="From Month">
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="fromYear" placeholder="From Year">
+                    <option>2004</option>
+                    <option>2005</option>
+                    <option>2006</option>
+                    <option>2007</option>
+                    <option>2008</option>
+                    <option>2009</option>
+                    <option>2010</option>
+                    <option>2011</option>
+                    <option>2012</option>
+                    <option>2013</option>
+                    <option>2014</option>
+                    <option>2015</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  &ensp;To: &ensp;
+                </td>
+                <td>
+                  <select id="toMonth" placeholder="To Month">
+                    <option>01</option>
+                    <option>02</option>
+                    <option>03</option>
+                    <option>04</option>
+                    <option>05</option>
+                    <option>06</option>
+                    <option>07</option>
+                    <option>08</option>
+                    <option>09</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option selected>12</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="toYear" placeholder="From Year">
+                    <option>2004</option>
+                    <option>2005</option>
+                    <option>2006</option>
+                    <option>2007</option>
+                    <option>2008</option>
+                    <option>2009</option>
+                    <option>2010</option>
+                    <option>2011</option>
+                    <option>2012</option>
+                    <option>2013</option>
+                    <option>2014</option>
+                    <option selected>2015</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="chartSelection">
+            <h5>Chart Type:</h5>
+            <input type="radio" name="chartType" id="overview" checked> Overview<br>
+            <input type="radio" name="chartType" id="relationships"> Relationships for term: 
+              <input type="text" id="relationshipTerm" disabled><br>
+          </div>
+        </div>
+        <div id="bottomOptions">
+          <div id="numberTermsSelection">
+            <h5 style="display: inline">Number of Terms Displayed: </h5>
+            &ensp;<input type="text" style="width: 40px" id="texttermscount" placeholder="count" value="50">
+          </div>
+          <div id="updateButtonContainer">
+            <button onclick="updateData()">Go</button>
+          </div>
         </div>
       </div>
       <div id="tagCloud" class="active">
@@ -109,12 +137,10 @@
       <div id="relationshipChart" class="inactive">
         <p>Relationship chart here.</p>
       </div>
-      <div id="timeline">
-      </div>
-      <div id="intervalSlider">
-        <p>Time interval slider here.</p>
-      </div>
     </div>
+    <div id="timeline">
+    </div>
+  </div>
 </body>
 
 <script>
@@ -125,41 +151,15 @@
       source = "wn";
       allTermsArray = wnallTermsArray;
       allTermsMap = wnallTermsMap;
-      topTerms = getTopTerms();
-      showNewWords(myWordCloud, topTerms);
-      //update stream graph, topterms.monthfreq contains monthly frequency
-      updateStreamGraph(topTerms)
     }
     else {
       source = "hp"
       allTermsArray = hpallTermsArray;
       allTermsMap = hpallTermsMap;
-      topTerms = getTopTerms();
-      showNewWords(myWordCloud, topTerms);
-      //update stream graph, topterms.monthfreq contains monthly frequency
-      updateStreamGraph(topTerms)
     }
 
   }
-  $('#texttermscount').bind('input propertychange', function () {
-    topTermsCount = $('#texttermscount').val();
-
-  })
-
-  $('#texttermscount').focusout(function () {
-    topTermsCount = $('#texttermscount').val();
-    $("#tagCloud").addClass("loading");
-    setTimeout(function () {
-      updateVisualization();
-      svg.selectAll(".cloud-terms").style("fill", function (d, i) {
-
-        return fill(i);
-
-      })
-      $("#tagCloud").removeClass("loading");
-    }, 0);
-  })
-
+  
   // stream graph variables declared globally to keep the scope for update
   var stack;
   var startDate;
@@ -454,8 +454,27 @@
   }
 
   function updateData() {
+    if ($("#wiki").is(":checked")) {
+      setSource("wiki");
+    } else {
+      setSource("hp");
+    }
+    
     start = parse.parse($('#fromYear').val() + " " + $('#fromMonth').val());
     end = parse.parse($('#toYear').val() + " " + $('#toMonth').val());
+    
+    topTermsCount = $('#texttermscount').val();
+    
+    // If relationships are chosen, hide tag cloud and show relationships.
+    // If not, then hide relationships and show tag cloud.
+    if ($("#relationships").is(":checked")) {
+      $("#tagCloud").removeClass("active").addClass("inactive");
+      $("#relationshipChart").addClass("active").removeClass("inactive");
+    } else {
+      $("#tagCloud").addClass("active").removeClass("inactive");
+      $("#relationshipChart").removeClass("active").addClass("inactive");
+    }
+    
     $("#tagCloud").addClass("loading");
     setTimeout(function () {
       updateVisualization();
@@ -466,6 +485,7 @@
       })
       $("#tagCloud").removeClass("loading");
     }, 0);
+    
 
   }
 
@@ -551,6 +571,8 @@
         .x(function (d) { return timelineX(d.month); })
         .y(function (d) { return timelineY(d.y0); });
 
+    // TODO: Sort topTerms by category.
+    
     layers = stack(topTerms);
 
     timelineX.domain([endDate, startDate]);
