@@ -179,25 +179,7 @@
     }
 
   }
-  $('#texttermscount').bind('input propertychange', function () {
-    topTermsCount = $('#texttermscount').val();
-
-  })
-
-  $('#texttermscount').focusout(function () {
-    topTermsCount = $('#texttermscount').val();
-    $("#tagCloud").addClass("loading");
-    setTimeout(function () {
-      updateVisualization();
-      svg.selectAll(".cloud-terms").style("fill", function (d, i) {
-
-        return fill(i);
-
-      })
-      $("#tagCloud").removeClass("loading");
-    }, 0);
-  })
-
+  
   // stream graph variables declared globally to keep the scope for update
   var stack;
   var startDate;
@@ -500,6 +482,9 @@
     
     start = parse.parse($('#fromYear').val() + " " + $('#fromMonth').val());
     end = parse.parse($('#toYear').val() + " " + $('#toMonth').val());
+    
+    topTermsCount = $('#texttermscount').val();
+    
     $("#tagCloud").addClass("loading");
     setTimeout(function () {
       updateVisualization();
@@ -510,6 +495,7 @@
       })
       $("#tagCloud").removeClass("loading");
     }, 0);
+    
 
   }
 
