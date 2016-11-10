@@ -355,10 +355,12 @@
               .on("mousemove", function (d) {
                 //  d3.select(this).attr("opacity", "0.6");
                 wordTip.show(d);
+                highlightLayer({term: d.text});
               })
               .on("mouseout", function (d) {
                 d3.select(this).attr("opacity", "1");
                 wordTip.hide();
+                unhighlightLayer();
               })
               //handle single and double clicks
               .on("click", function (d) {
