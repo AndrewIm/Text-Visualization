@@ -317,6 +317,20 @@
 
     return topTerms;
   }
+  
+  function minDate(data) {
+    return d3.min(data, function (d) {
+      var localMin = d3.min(d.monthfreq, function (d) { return d.month; });
+      return localMin;
+    });
+  }
+  
+  function maxDate(data) {
+    return d3.max(data, function (d) {
+      var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
+      return localMax;
+    });
+  }
 
   function showNewWords(vis, words) {
     vis.update(words)
@@ -381,13 +395,17 @@
                     
                     var topTerms = getTopTerms();
                     
+                    var startDate = minDate(topTerms);
+                    
+                    var endDate = maxDate(topTerms);
+                    
                     // Hide/show the corresponding layer in the timeline.
                     topTerms.forEach(function(d1) {
                       if (d1.tempValues == undefined) {
                         d1.tempValues = d1.monthfreq;
                       }
                       if (!d.active && d1.term == d.text) {
-                        d1.monthfreq = fillData([{ freq:0, month: start }], end, start);
+                        d1.monthfreq = fillData([{ freq:0, month: minDate }], endDate, startDate);
                       } else {
                         d1.monthfreq = d1.tempValues;
                       }
@@ -538,15 +556,9 @@
     // TODO(manorepo): Remove below comment.
     // stream code change - Moved the sub functions out of this function to make available for update.
 
-    startDate = d3.max(topTerms, function (d) {
-      var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
-      return localMax;
-    });
+    startDate = maxDate(topTerms);
 
-    endDate = d3.min(topTerms, function (d) {
-      var localMin = d3.min(d.monthfreq, function (d) { return d.month; });
-      return localMin;
-    });
+    endDate = minDate(topTerms);
 
     topTerms.forEach(function (d) {
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
@@ -714,15 +726,9 @@
   }
 
   function updateStreamGraph(topTerms, hasTransition) {
-    startDate = d3.max(topTerms, function (d) {
-      var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
-      return localMax;
-    });
+    startDate = maxDate(topTerms);
 
-    endDate = d3.min(topTerms, function (d) {
-      var localMin = d3.min(d.monthfreq, function (d) { return d.month; });
-      return localMin;
-    });
+    endDate = minDate(topTerms);
 
     topTerms.forEach(function (d) {
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
