@@ -12,9 +12,13 @@
   <link rel="stylesheet" href="css/app.css">
   <script>
     $(document).ready(function () {
-      $('#showRelationships').on('click', function () {
-        var isChecked = $(this).prop("checked");
-
+      $(document.getElementsByName("chartType")).on('click', function () {
+        if (this.id == "overview") {
+          $("#relationshipTerm").attr("disabled", true);
+        } else {
+          $("#relationshipTerm").attr("disabled", false);
+        }
+        /*
         // If checked, hide tag cloud and show relationships.  If not, then hide relationships and show tag cloud.
         if (isChecked) {
           $("#tagCloud").removeClass("active").addClass("inactive");
@@ -25,6 +29,7 @@
           $("#relationshipChart").removeClass("active").addClass("inactive");
           $("#termRelationship").attr("disabled", true);
         }
+        */
       });
     });
   </script>
