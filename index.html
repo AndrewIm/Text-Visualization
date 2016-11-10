@@ -18,18 +18,6 @@
         } else {
           $("#relationshipTerm").attr("disabled", false);
         }
-        /*
-        // If checked, hide tag cloud and show relationships.  If not, then hide relationships and show tag cloud.
-        if (isChecked) {
-          $("#tagCloud").removeClass("active").addClass("inactive");
-          $("#relationshipChart").addClass("active").removeClass("inactive");
-          $("#termRelationship").attr("disabled", false);
-        } else {
-          $("#tagCloud").addClass("active").removeClass("inactive");
-          $("#relationshipChart").removeClass("active").addClass("inactive");
-          $("#termRelationship").attr("disabled", true);
-        }
-        */
       });
     });
   </script>
@@ -476,6 +464,16 @@
     end = parse.parse($('#toYear').val() + " " + $('#toMonth').val());
     
     topTermsCount = $('#texttermscount').val();
+    
+    // If relationships are chosen, hide tag cloud and show relationships.
+    // If not, then hide relationships and show tag cloud.
+    if ($("#relationships").is(":checked")) {
+      $("#tagCloud").removeClass("active").addClass("inactive");
+      $("#relationshipChart").addClass("active").removeClass("inactive");
+    } else {
+      $("#tagCloud").addClass("active").removeClass("inactive");
+      $("#relationshipChart").removeClass("active").addClass("inactive");
+    }
     
     $("#tagCloud").addClass("loading");
     setTimeout(function () {
