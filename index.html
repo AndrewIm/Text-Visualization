@@ -209,7 +209,7 @@
           .attr("width", cloudWidth)
           .attr("height", cloudHeight)
           .append("g")
-          .attr("transform", "translate(" + cloudWidth / 2 + "," + cloudHeight / 2 + ")")
+          .attr("transform", "translate(" + cloudWidth / 2 + "," + cloudHeight / 2 + ")");
 
   /* Initialize tooltip */
   var wordTip = d3.tip()
@@ -405,6 +405,20 @@
 
     return topTerms;
   }
+  
+  function minDate(data) {
+    return d3.min(data, function (d) {
+      var localMin = d3.min(d.monthfreq, function (d) { return d.month; });
+      return localMin;
+    });
+  }
+  
+  function maxDate(data) {
+    return d3.max(data, function (d) {
+      var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
+      return localMax;
+    });
+  }
 
   function showNewWords(vis, words) {
 
@@ -444,11 +458,13 @@
               })
               .on("mousemove", function (d) {
                 //  d3.select(this).attr("opacity", "0.6");
-                wordTip.show(d);
+                wordTip.show(d, this);
+                highlightLayer({term: d.text});
               })
               .on("mouseout", function (d) {
                 d3.select(this).attr("opacity", "1");
                 wordTip.hide();
+                unhighlightLayer();
               })
               //handle single and double clicks
               .on("click", function (d) {
@@ -466,6 +482,30 @@
                               else
                                 return getColor(d1.category, d1.text);
                             })
+                    
+                    stack = stack.offset("wiggle");
+                    
+                    var startDate = minDate(topTerms);
+                    
+                    var endDate = maxDate(topTerms);
+                    
+                    // Hide/show the corresponding layer in the timeline.
+                    topTerms.forEach(function(d1) {
+                      if (d1.tempValues == undefined) {
+                        d1.tempValues = d1.monthfreq;
+                      }
+                      if (d1.term == d.text) {
+                        // If this element is the one that needs to be changed.
+                        if (d.active == false) {
+                          d1.monthfreq = fillData([{ freq:0, month: startDate }], endDate, startDate);
+                        } else {
+                          d1.monthfreq = d1.tempValues;
+                        }
+                      }
+                    });
+                    
+                    updateStreamGraph(topTerms, true);
+                    
                     clicks = 0;             //after action performed, reset counter
 
                   }, DELAY);
@@ -485,6 +525,27 @@
                             else
                               return "grey";
                           })
+                  
+                  stack = stack.offset("silhouette");
+                    
+                  var startDate = minDate(topTerms);
+
+                  var endDate = maxDate(topTerms);
+
+                  // Hide/show the corresponding layer in the timeline.
+                  topTerms.forEach(function(d1) {
+                    if (d1.tempValues == undefined) {
+                      d1.tempValues = d1.monthfreq;
+                    }
+                    if (d1.term != d.text) {
+                      d1.monthfreq = fillData([{ freq:0, month: minDate }], endDate, startDate);
+                    } else {
+                      d1.monthfreq = d1.tempValues;
+                    }
+                  });
+
+                  updateStreamGraph(topTerms, true);
+                  
                   clicks = 0;             //after action performed, reset counter
                 }
 
@@ -597,33 +658,26 @@
   function updateVisualization() {
 
     $("#range").text(start.getMonth() + " " + start.getFullYear() + " TO " + end.getMonth() + " " + end.getFullYear());
-    var topTerms = getTopTerms();
+    topTerms = getTopTerms();
     showNewWords(myWordCloud, topTerms);
     //update stream graph, topterms.monthfreq contains monthly frequency
-    updateStreamGraph(topTerms)
+    updateStreamGraph(topTerms, false);
   }
 
   function setStreamGraph() {
     // TODO(manorepo): Remove below comment.
     // stream code change - Moved the sub functions out of this function to make available for update.
 
-    startDate = d3.max(topTerms, function (d) {
-      var localMax = d3.max(d.monthfreq, function (d) {
-        return d.month;
-      });
-      return localMax;
-    });
+    startDate = maxDate(topTerms);
 
-    endDate = d3.min(topTerms, function (d) {
-      var localMin = d3.min(d.monthfreq, function (d) {
-        return d.month;
-      });
-      return localMin;
-    });
+    endDate = minDate(topTerms);
 
     topTerms.forEach(function (d) {
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
     });
+    
+    zeroSeries = [{ freq: 0, month: endDate }];
+    zeroSeries = fillData(zeroSeries, startDate, endDate);
 
     // Define dimensions.
     var margin = {top: 20, right: 0, bottom: 30, left: 40};
@@ -702,13 +756,19 @@
 
     // Stacked layers.
     timeline.selectAll(".layer")
-            .data(layers)
-            .enter().append("path")
-            .attr("clip-path", "url(#sideClip)")
-            .attr("class", "layer")
-            .call(updateLayer)
-            .on("mouseover", highlightLayer)
-            .on("mouseout", unhighlightLayer);
+        .data(layers)
+      .enter().append("path")
+        .attr("clip-path", "url(#sideClip)")
+        .attr("class", "layer")
+        .call(updateLayer)
+        .on("mouseover", function(d) {
+          highlightLayer(d);
+          highlightWord(d);
+        })
+        .on("mouseout", function() {
+          unhighlightLayer();
+          unHighlightWord();
+        });
 
     // Lines separating stacked layers.
     timeline.selectAll(".layerLine")
@@ -760,49 +820,39 @@
   }
 
   // Fills in missing dates in 'data'. 'data' must be non-empty.
-  // Assumes that 'data' is sorted by date in reverse-chronological order.
-  function fillData(data, startDate, endDate) {
+  // Assumes that 'data' is sorted by date in chronological order.
+  function fillData(data, endDate, startDate) {
     var d = [],
-            len = data.length,
-            now = new Date(startDate),
-            last = new Date(endDate),
-            iterator = len - 1,
-            y;
+        len = data.length,
+        now = new Date(startDate),
+        last = new Date(endDate),
+        iterator = 0,
+        y;
 
-    while (now >= last) {
+    while (now <= last) {
       y = 0;
       try {
         // stream code change - changed logic as the data has months in ascending order
-        if (iterator >= 0 && now.getTime() == new Date(data[iterator].month).getTime()) {
+        if (iterator < len && now.getTime() == new Date(data[iterator].month).getTime()) {
           y = data[iterator].freq;
-          --iterator;
+          ++iterator;
         }
       }
       catch (exc) {
         console.log(iterator);
         debugger;
       }
-      d.push({"month": new Date(now), "freq": y});
-      now["setMonth"](now.getMonth() - 1);
+      d.push({ "month": new Date(now), "freq": y });
+      now["setMonth"](now.getMonth() + 1);
     }
 
     return d;
   }
 
-  function updateStreamGraph(topTerms) {
-    startDate = d3.max(topTerms, function (d) {
-      var localMax = d3.max(d.monthfreq, function (d) {
-        return d.month;
-      });
-      return localMax;
-    });
+  function updateStreamGraph(topTerms, hasTransition) {
+    startDate = maxDate(topTerms);
 
-    endDate = d3.min(topTerms, function (d) {
-      var localMin = d3.min(d.monthfreq, function (d) {
-        return d.month;
-      });
-      return localMin;
-    });
+    endDate = minDate(topTerms);
 
     topTerms.forEach(function (d) {
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
@@ -821,25 +871,38 @@
     var stackLayers = timeline.selectAll(".layer")
             .data(layers);
     stackLayers.enter().append("path")
-            .attr("clip-path", "url(#sideClip)")
-            .attr("class", "layer")
-            .call(updateLayer)
-            .on("mouseover", highlightLayer)
-            .on("mouseout", unhighlightLayer);
+        .attr("clip-path", "url(#sideClip)")
+        .attr("class", "layer")
+        .call(updateLayer)
+        .on("mouseover", function(d) {
+          highlightLayer(d);
+          highlightWord(d);
+        })
+        .on("mouseout", unhighlightLayer);
 
     // Lines separating stacked layers.
     var layerLines = timeline.selectAll(".layerLine")
             .data(layers);
     layerLines.enter().append("path")
-            .attr("clip-path", "url(#sideClip)")
-            .attr("class", "layerLine")
-            .call(updateLayerLine);
+        .attr("clip-path", "url(#sideClip)")
+        .attr("class", "layerLine")
+        .call(updateLayerLine);
+    
+    if (hasTransition) {
+      timeline.selectAll(".layer")
+          .transition()
+          .call(updateLayer);
 
-    timeline.selectAll(".layer")
-            .call(updateLayer);
-
-    timeline.selectAll(".layerLine")
-            .call(updateLayerLine);
+      timeline.selectAll(".layerLine")
+          .transition()
+          .call(updateLayerLine);
+    } else {
+      timeline.selectAll(".layer")
+        .call(updateLayer);
+    
+      timeline.selectAll(".layerLine")
+          .call(updateLayerLine);
+    }
 
     // Remove layers that should no longer be there.
     stackLayers.exit().remove();
@@ -889,6 +952,25 @@
                 return "0.2";
               }
             });
+  }
+  
+  function highlightWord(d) {
+    var cloudText = svg.selectAll("g text")
+        .each(function(d1) {
+          var currentText = d3.select(this);
+          if (d1.text == d.term) {
+            wordTip.show(d1, this);
+            currentText.attr("opacity", "1");
+          } else {
+            currentText.attr("opacity", "0.1");
+          }
+        });
+  }
+  
+  function unHighlightWord() {
+    svg.selectAll("g text")
+        .attr("opacity", "1")
+        .call(wordTip.hide);
   }
 
   function unhighlightLayer() {
