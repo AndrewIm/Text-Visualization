@@ -368,7 +368,7 @@
               })
               .on("mousemove", function (d) {
                 //  d3.select(this).attr("opacity", "0.6");
-                wordTip.show(d);
+                wordTip.show(d, this);
                 highlightLayer({term: d.text});
               })
               .on("mouseout", function (d) {
