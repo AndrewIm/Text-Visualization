@@ -201,7 +201,7 @@
           .attr("width", cloudWidth)
           .attr("height", cloudHeight)
           .append("g")
-          .attr("transform", "translate(" + cloudWidth / 2 + "," + cloudHeight / 2 + ")")
+          .attr("transform", "translate(" + cloudWidth / 2 + "," + cloudHeight / 2 + ")");
 
   /* Initialize tooltip */
   var wordTip = d3.tip()
@@ -605,8 +605,14 @@
         .attr("clip-path", "url(#sideClip)")
         .attr("class", "layer")
         .call(updateLayer)
-        .on("mouseover", highlightLayer)
-        .on("mouseout", unhighlightLayer);
+        .on("mouseover", function(d) {
+          highlightLayer(d);
+          highlightWord(d);
+        })
+        .on("mouseout", function() {
+          unhighlightLayer();
+          unHighlightWord();
+        });
 
     // Lines separating stacked layers.
     timeline.selectAll(".layerLine")
@@ -716,7 +722,10 @@
         .attr("clip-path", "url(#sideClip)")
         .attr("class", "layer")
         .call(updateLayer)
-        .on("mouseover", highlightLayer)
+        .on("mouseover", function(d) {
+          highlightLayer(d);
+          highlightWord(d);
+        })
         .on("mouseout", unhighlightLayer);
 
     // Lines separating stacked layers.
@@ -775,6 +784,25 @@
             return "0.2";
           }
         });
+  }
+  
+  function highlightWord(d) {
+    var cloudText = svg.selectAll("g text")
+        .each(function(d1) {
+          var currentText = d3.select(this);
+          if (d1.text == d.term) {
+            wordTip.show(d1, this);
+            currentText.attr("opacity", "1");
+          } else {
+            currentText.attr("opacity", "0.1");
+          }
+        });
+  }
+  
+  function unHighlightWord() {
+    svg.selectAll("g text")
+        .attr("opacity", "1")
+        .call(wordTip.hide);
   }
 
   function unhighlightLayer() {
