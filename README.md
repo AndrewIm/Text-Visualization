@@ -44,6 +44,12 @@ The visualization also shows that the term frequency of elected presidential can
 ![Alt text](/screenshots/post-election.PNG?raw=true "Post-2008 election")
 ![Alt text](/screenshots/post-election-2012.PNG?raw=true "Post-2012 election")
 
+#### Iraq as an issue in the 2008 election season
+
+The relationships feature of the visualization shows a correlation between the presidential candidates and Iraq, which suggests that Iraq may have been a major issue in the election.
+
+![Alt text](/screenshots/election-iraq.PNG?raw=true "Iraq in the 2008 election")
+
 #### Team Responsibilities
 Manohar Kotapati(manorepo) - Data Processing  
 James Taber(jmtaber129) - Timeline  
