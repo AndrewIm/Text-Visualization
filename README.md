@@ -11,6 +11,13 @@ Functionality description here.
 
 ### Data Processing
 
+The application uses two datasets one is from wiki news and other is from Huffington post. On intial page load the wiki news data will be loaded and Huffington data will be loaded on initial selection of Huffinton source button in the options pane.
+
+It converts the rawdata into the format of key value pairs where key is the term and values are category, total frequency and monthly wise object.
+
+![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/data_monthly_format.png)
+
+
 ### Interesting Findings
 
 #### Correlation between news on Iraq and the US-Iraq Status of Forces Agreement
