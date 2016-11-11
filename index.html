@@ -238,7 +238,7 @@
     //Create a new instance of the word cloud visualisation.
     myWordCloud = wordCloud('#tagCloud');
     loadData("data/wikinews.tsv", "wn")
-    loadData("data/huffington.tsv", "hp")
+    //loadData("data/huffington.tsv", "hp")
   });
 
   function loadData(filename, source) {
@@ -880,7 +880,10 @@
           highlightLayer(d);
           highlightWord(d);
         })
-        .on("mouseout", unhighlightLayer);
+        .on("mouseout", function() {
+          unhighlightLayer();
+          unHighlightWord();
+        });
 
     // Lines separating stacked layers.
     var layerLines = timeline.selectAll(".layerLine")
