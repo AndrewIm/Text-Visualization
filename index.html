@@ -1319,7 +1319,7 @@
     svg.selectAll("g text")
             .attr("opacity", "1")
             .call(wordTip.hide);
-    if ($("#relationships").is(":checked")) {
+    if ($("#relationshipChart").hasClass("active")) {
 
       container.selectAll("path.chord").style("opacity", function (p) {
         // COMPARE CHORD IDS
