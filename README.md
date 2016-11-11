@@ -25,12 +25,23 @@ Instead of going through all blogs, it will search for the respective blogs and 
 
 ### Functionality 
 The application provides an intuitive user interface, options for the selection of source, time interval options, chart type options(ie, option for the selection of word cloud & relationships between the terms or for a particular term) and option for the number of terms to be displayed.
+
+_**Word Cloud and Timeline**_
 In default the application visualizes the top 50 words of wiki news with its word cloud and its corresponding time line.
 
 When the user selects the source, required time interval,overview,and  particular number of terms to be displayed then its word cloud and respective time line is displayed.
 when the user hover on a particular word on the word cloud its respective time series graph is highlited on the timeline and viceversa.
 
 ![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/overview1.png)
+
+_**Relations and Timeline**_
+When the user double clicks a particular word then all the words of the word cloud become inactive and only the timeseries of that word is displayed.
+
+When the user selects the relationships for the terms and give paticular number of terms to be displayed then the chord diagram representing the relationships among the given number of terms along with its corresponding time series is displayed.
+
+
+When the user hovers on any word on the chord diagram then its relation with other terms is highlighted along with its timeseries and viceversa.
+
 
 
 
