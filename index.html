@@ -220,6 +220,10 @@
             return "<strong>" + d.text + " :" + d.frequency + "</strong>";
           });
   svg.call(wordTip);
+  var cloudmessages = svg.append("p")
+          .attr("class", "messages")
+          .attr("transform", "translate(10, 10)")
+          .html("Updating...");
   var parse = d3.time.format("%Y %m");
   var start = parse.parse("2004 01");
   var end = parse.parse("2015 12");
@@ -249,7 +253,7 @@
     var localallTermsMap;
     var data = preProcessData();
     data.startProcess(filename, function (data) {
-
+      cloudmessages.attr("opacity", 1);
       localallTermsMap = data;
       var monthly = [];
       var currmonth;
@@ -297,10 +301,11 @@
         allTermsMap = hpallTermsMap
         topTerms = getTopTerms(allTermsArray);
         showNewWords(myWordCloud, topTerms);
+        updateStreamGraph(topTerms,false)
         //Set stream graph, topterms.monthfreq contains monthly frequency
 
       }
-
+      cloudmessages.attr("opacity", 0);
 
     });
   }
@@ -869,13 +874,15 @@
       setSource("wiki");
     } else {
       setSource("hp");
-      // loadData("data/huffington.tsv", "hp")
     }
     topTermsCount = $('#texttermscount').val();
     start = parse.parse($('#fromYear').val() + " " + $('#fromMonth').val());
     end = parse.parse($('#toYear').val() + " " + $('#toMonth').val());
     if (source == "hp" && hpallTermsArray.length == 0) {
+
+
       loadData("data/huffington.tsv", "hp");
+      cloudmessages.attr("opacity", 0);
     }
     else {
 
@@ -889,6 +896,8 @@
       else {
         $("#tagCloud").addClass("loading");
         setTimeout(function () {
+
+
           updateVisualization();
           svg.selectAll(".cloud-terms").style("fill", function (d, i) {
             return getColor(d.category, d.text);
@@ -898,14 +907,7 @@
 
         // If relationships are chosen, hide tag cloud and show relationships.
         // If not, then hide relationships and show tag cloud.
-        if ($("#relationships").is(":checked")) {
-          $("#tagCloud").removeClass("active").addClass("inactive");
-          $("#relationshipChart").addClass("active").removeClass("inactive");
-          plotRelations()
-        } else {
-          $("#tagCloud").addClass("active").removeClass("inactive");
-          $("#relationshipChart").removeClass("active").addClass("inactive");
-        }
+
       }
 
       // If relationships are chosen, hide tag cloud and show relationships.
@@ -938,7 +940,15 @@
     topTerms = getTopTerms(allTermsArray);
     showNewWords(myWordCloud, topTerms);
     //update stream graph, topterms.monthfreq contains monthly frequency
-    updateStreamGraph(topTerms, true);
+    updateStreamGraph(topTerms, false);
+    if ($("#relationships").is(":checked")) {
+      $("#tagCloud").removeClass("active").addClass("inactive");
+      $("#relationshipChart").addClass("active").removeClass("inactive");
+      plotRelations()
+    } else {
+      $("#tagCloud").addClass("active").removeClass("inactive");
+      $("#relationshipChart").removeClass("active").addClass("inactive");
+    }
   }
 
   function setStreamGraph() {
@@ -1315,8 +1325,9 @@
         originwords = new Object();
         topTerms.forEach(function (term) {
           originwords[term.term] = 1;
-          plotRelations_Process(rawdata, originwords);
+
         })
+        plotRelations_Process(rawdata, originwords);
 
       }
       else {
@@ -1326,8 +1337,9 @@
           originwords = new Object();
           topTerms.forEach(function (term) {
             originwords[term.term] = 1;
-            plotRelations_Process(rawdata, originwords);
+
           })
+          plotRelations_Process(rawdata, originwords);
 
 
         })
@@ -1340,8 +1352,9 @@
         originwords = new Object();
         topTerms.forEach(function (term) {
           originwords[term.term] = 1;
-          plotRelations_Process(rawdata, originwords);
+
         })
+        plotRelations_Process(rawdata, originwords);
 
       }
       else {
@@ -1351,8 +1364,9 @@
           originwords = new Object();
           topTerms.forEach(function (term) {
             originwords[term.term] = 1;
-            plotRelations_Process(rawdata, originwords);
+
           })
+          plotRelations_Process(rawdata, originwords);
 
 
         })
