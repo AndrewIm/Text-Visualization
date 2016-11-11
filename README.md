@@ -3,7 +3,7 @@
 Project to extract and visualize the texts from two blogs, The Wikinews data (roughly 3.3M) contains 11,267 articles and the Huffington Post data (roughly 29.4M) contains 75,293 political blogs.
 
 #### Click the image below to watch a short video demo.
-[![ScreenShot](/screenshots/thumbnail.PNG)](https://youtu.be/mo1HT_NMcc8)
+[![ScreenShot](/screenshots/thumbnail.PNG)](https://youtu.be/M5YvbRzGtl0)
 
 The web application can be found at https://manorepo.github.io/Text-Visualization/.
 
