@@ -42,9 +42,8 @@ When the user selects the relationships for the terms and give paticular number 
 
 When the user hovers on any word on the chord diagram then its relation with other terms is highlighted along with its timeseries and viceversa.
 
-            			   |  
-:-------------------------:|:-------------------------:
-![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/relations1.png)  |  ![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/relations2.png)
+
+![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/relations1.png)![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/relations2.png)
 
 
 
