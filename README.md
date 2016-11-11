@@ -21,7 +21,7 @@ Each monthly wise object contains the blog numbers in which the term occured and
 
 ![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/data_monthly_format.png)
 
-The appication is using the saved blog numbers are calulating the frequency of related words.
+The appication is using the saved blog numbers for calulating the frequency of related words.
 Instead of going through all blogs, it will search for the respective blogs and counts the frequency.
 
 
