@@ -15,7 +15,7 @@ The application uses two datasets one is from wiki news and other is from Huffin
 
 It converts the rawdata into the format of key value pairs where key is the term and values are category, total frequency and monthly wise object.
 
-![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/data_monthly_format.png)
+![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/data format.png)
 
 
 ### Interesting Findings
