@@ -138,7 +138,6 @@
     <div id="tagCloud" class="active">
     </div>
     <div id="relationshipChart" class="inactive">
-      <p>Relationship chart here.</p>
     </div>
   </div>
   <div id="timeline">
@@ -1108,9 +1107,9 @@
   var arc
   var chordpath;
   function plotRelations() {
-    var width = $('#relationshipChart').width() - 20
-    var height = $('#relationshipChart').height() - 20
-    innerRadius = (height / 2) - 50;
+    var width = $('#relationshipChart').width();
+    var height = $('#relationshipChart').height();
+    innerRadius = ((Math.min(height, width)) / 2)*3/5;
     chordsvg.attr("width", width)
             .attr("height", height)
             .attr("viewBox", "0 0 " + width + " " + height);
