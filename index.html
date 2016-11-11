@@ -1295,7 +1295,7 @@
                 currentText.attr("opacity", "0.1");
               }
             });
-    if ($("#relationships").is(":checked")) {
+    if ($("#relationshipChart").hasClass("active")) {
       wordTip.hide();
 
       container.selectAll("path.chord").style("opacity", function (p) {
