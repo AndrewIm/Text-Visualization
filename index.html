@@ -175,7 +175,7 @@
   var timelineX
   var timelineY;
   var xAxis, yAxis;
-  var catcolors=[];
+  var catcolors = [];
   // Method for creating stack layout.
   stack = d3.layout.stack().offset("wiggle")
           .values(function (d) {
@@ -224,8 +224,8 @@
   var start = parse.parse("2004 01");
   var end = parse.parse("2015 12");
   var topTerms;
-  var wnrawdata=[];
-  var hprawdata=[];
+  var wnrawdata = [];
+  var hprawdata = [];
   var myWordCloud;
   var fill = d3.scale.category20();
   var personcolor = [];
@@ -411,18 +411,18 @@
         orgcolor[topTerms[i].term] = colorO.darker(currorginc)
       }
     }
-    catcolors=[];
-    for(var term in orgcolor){
-      catcolors[term]=orgcolor[term];
+    catcolors = [];
+    for (var term in orgcolor) {
+      catcolors[term] = orgcolor[term];
     }
-    for(var term in locationcolor){
-      catcolors[term]=locationcolor[term];
+    for (var term in locationcolor) {
+      catcolors[term] = locationcolor[term];
     }
-    for(var term in misccolor){
-      catcolors[term]=misccolor[term];
+    for (var term in misccolor) {
+      catcolors[term] = misccolor[term];
     }
-    for(var term in personcolor){
-      catcolors[term]=personcolor[term];
+    for (var term in personcolor) {
+      catcolors[term] = personcolor[term];
     }
     return topTerms;
   }
@@ -430,19 +430,19 @@
 
   function getTopTerms_particularTerm(inputterm) {
     var localallTermsArray = [];
-    var allTerms=new Object();
+    var allTerms = new Object();
     d3.tsv("data/wikinews.tsv", function (data) {
       rawdata = data;
-      var blogs=[]
-              for(var v in wnallTermsMap[inputterm]) {
-                if (v == "category" || v == "frequency")
-                  continue;
-                wnallTermsMap[inputterm][v].blogs.forEach(function (d) {
-                  blogs.push(d);
-                })
-              }
+      var blogs = []
+      for (var v in wnallTermsMap[inputterm]) {
+        if (v == "category" || v == "frequency")
+          continue;
+        wnallTermsMap[inputterm][v].blogs.forEach(function (d) {
+          blogs.push(d);
+        })
+      }
 
-var lines=0;
+      var lines = 0;
       blogs.forEach(function (blognumber) {
         ++lines;
         var time = rawdata[blognumber - 1].time;
@@ -650,20 +650,24 @@ var lines=0;
       topTerms = getTopTerms(localallTermsArray);
       updateStreamGraph(topTerms, true);
       plotRelations()
-      })
+    })
     // return relatedwordsArray;
 
   }
   function minDate(data) {
     return d3.min(data, function (d) {
-      var localMin = d3.min(d.monthfreq, function (d) { return d.month; });
+      var localMin = d3.min(d.monthfreq, function (d) {
+        return d.month;
+      });
       return localMin;
     });
   }
-  
+
   function maxDate(data) {
     return d3.max(data, function (d) {
-      var localMax = d3.max(d.monthfreq, function (d) { return d.month; });
+      var localMax = d3.max(d.monthfreq, function (d) {
+        return d.month;
+      });
       return localMax;
     });
   }
@@ -692,8 +696,8 @@ var lines=0;
               })
               .style("font-family", "Impact")
               .style("fill", function (d, i) {
-                if(catcolors[d.text])
-                return catcolors[d.text]
+                if (catcolors[d.text])
+                  return catcolors[d.text]
                 else
                   return fill(i);
               })
@@ -733,30 +737,30 @@ var lines=0;
                               else
                                 return catcolors[d1.text];
                             })
-                    
+
                     stack = stack.offset("wiggle");
-                    
+
                     var startDate = minDate(topTerms);
-                    
+
                     var endDate = maxDate(topTerms);
-                    
+
                     // Hide/show the corresponding layer in the timeline.
-                    topTerms.forEach(function(d1) {
+                    topTerms.forEach(function (d1) {
                       if (d1.tempValues == undefined) {
                         d1.tempValues = d1.monthfreq;
                       }
                       if (d1.term == d.text) {
                         // If this element is the one that needs to be changed.
                         if (d.active == false) {
-                          d1.monthfreq = fillData([{ freq:0, month: startDate }], endDate, startDate);
+                          d1.monthfreq = fillData([{freq: 0, month: startDate}], endDate, startDate);
                         } else {
                           d1.monthfreq = d1.tempValues;
                         }
                       }
                     });
-                    
+
                     updateStreamGraph(topTerms, true);
-                    
+
                     clicks = 0;             //after action performed, reset counter
 
                   }, DELAY);
@@ -776,27 +780,27 @@ var lines=0;
                             else
                               return "grey";
                           })
-                  
+
                   stack = stack.offset("silhouette");
-                    
+
                   var startDate = minDate(topTerms);
 
                   var endDate = maxDate(topTerms);
 
                   // Hide/show the corresponding layer in the timeline.
-                  topTerms.forEach(function(d1) {
+                  topTerms.forEach(function (d1) {
                     if (d1.tempValues == undefined) {
                       d1.tempValues = d1.monthfreq;
                     }
                     if (d1.term != d.text) {
-                      d1.monthfreq = fillData([{ freq:0, month: minDate }], endDate, startDate);
+                      d1.monthfreq = fillData([{freq: 0, month: minDate}], endDate, startDate);
                     } else {
                       d1.monthfreq = d1.tempValues;
                     }
                   });
 
                   updateStreamGraph(topTerms, true);
-                  
+
                   clicks = 0;             //after action performed, reset counter
                 }
 
@@ -828,16 +832,16 @@ var lines=0;
       update: function (words) {
         var newHighRange;
         if ($("#tagCloud").width() > 430)
-          newHighRange=80;
+          newHighRange = 80;
         else
-          newHighRange=60;
+          newHighRange = 60;
         sizeScale.domain([d3.min(words, function (d) {
           return d.freq
         }), d3.max(words, function (d) {
           return d.freq
         })])
 
-        var newLowRange=Math.floor((newHighRange)/words.length)+9;
+        var newLowRange = Math.floor((newHighRange) / words.length) + 9;
         sizeScale.range([newLowRange, newHighRange]);
 
 
@@ -865,51 +869,50 @@ var lines=0;
       setSource("wiki");
     } else {
       setSource("hp");
-     // loadData("data/huffington.tsv", "hp")
+      // loadData("data/huffington.tsv", "hp")
     }
     topTermsCount = $('#texttermscount').val();
     start = parse.parse($('#fromYear').val() + " " + $('#fromMonth').val());
     end = parse.parse($('#toYear').val() + " " + $('#toMonth').val());
-    if(source=="hp" && hpallTermsArray.length==0 ){
+    if (source == "hp" && hpallTermsArray.length == 0) {
       loadData("data/huffington.tsv", "hp");
     }
-    else{
-
-
-    if ($("#relationships").is(":checked")&& $("#relationshipTerm").val()!="") {
-      getTopTerms_particularTerm($("#relationshipTerm").val());
-      $("#tagCloud").removeClass("active").addClass("inactive");
-      $("#relationshipChart").addClass("active").removeClass("inactive");
-
-    }
     else {
-      $("#tagCloud").addClass("loading");
-      setTimeout(function () {
-        updateVisualization();
-        svg.selectAll(".cloud-terms").style("fill", function (d, i) {
-          return getColor(d.category, d.text);
-        })
-        $("#tagCloud").removeClass("loading");
-      }, 0);
+
+
+      if ($("#relationships").is(":checked") && $("#relationshipTerm").val() != "") {
+        getTopTerms_particularTerm($("#relationshipTerm").val());
+        $("#tagCloud").removeClass("active").addClass("inactive");
+        $("#relationshipChart").addClass("active").removeClass("inactive");
+
+      }
+      else {
+        $("#tagCloud").addClass("loading");
+        setTimeout(function () {
+          updateVisualization();
+          svg.selectAll(".cloud-terms").style("fill", function (d, i) {
+            return getColor(d.category, d.text);
+          })
+          $("#tagCloud").removeClass("loading");
+        }, 0);
+
+        // If relationships are chosen, hide tag cloud and show relationships.
+        // If not, then hide relationships and show tag cloud.
+        if ($("#relationships").is(":checked")) {
+          $("#tagCloud").removeClass("active").addClass("inactive");
+          $("#relationshipChart").addClass("active").removeClass("inactive");
+          plotRelations()
+        } else {
+          $("#tagCloud").addClass("active").removeClass("inactive");
+          $("#relationshipChart").removeClass("active").addClass("inactive");
+        }
+      }
 
       // If relationships are chosen, hide tag cloud and show relationships.
       // If not, then hide relationships and show tag cloud.
-      if ($("#relationships").is(":checked")) {
-        $("#tagCloud").removeClass("active").addClass("inactive");
-        $("#relationshipChart").addClass("active").removeClass("inactive");
-        plotRelations()
-      } else {
-        $("#tagCloud").addClass("active").removeClass("inactive");
-        $("#relationshipChart").removeClass("active").addClass("inactive");
-      }
+
+
     }
-
-    // If relationships are chosen, hide tag cloud and show relationships.
-    // If not, then hide relationships and show tag cloud.
-
-
-
-  }
   }
 
   function brushend() {
@@ -949,8 +952,8 @@ var lines=0;
     topTerms.forEach(function (d) {
       d.monthfreq = fillData(d.monthfreq, startDate, endDate);
     });
-    
-    zeroSeries = [{ freq: 0, month: endDate }];
+
+    zeroSeries = [{freq: 0, month: endDate}];
     zeroSeries = fillData(zeroSeries, startDate, endDate);
 
     // Define dimensions.
@@ -1030,19 +1033,19 @@ var lines=0;
 
     // Stacked layers.
     timeline.selectAll(".layer")
-        .data(layers)
-      .enter().append("path")
-        .attr("clip-path", "url(#sideClip)")
-        .attr("class", "layer")
-        .call(updateLayer)
-        .on("mouseover", function(d) {
-          highlightLayer(d);
-          highlightWord(d);
-        })
-        .on("mouseout", function() {
-          unhighlightLayer();
-          unHighlightWord();
-        });
+            .data(layers)
+            .enter().append("path")
+            .attr("clip-path", "url(#sideClip)")
+            .attr("class", "layer")
+            .call(updateLayer)
+            .on("mouseover", function (d) {
+              highlightLayer(d);
+              highlightWord(d);
+            })
+            .on("mouseout", function () {
+              unhighlightLayer();
+              unHighlightWord();
+            });
 
     // Lines separating stacked layers.
     timeline.selectAll(".layerLine")
@@ -1097,11 +1100,11 @@ var lines=0;
   // Assumes that 'data' is sorted by date in chronological order.
   function fillData(data, endDate, startDate) {
     var d = [],
-        len = data.length,
-        now = new Date(startDate),
-        last = new Date(endDate),
-        iterator = 0,
-        y;
+            len = data.length,
+            now = new Date(startDate),
+            last = new Date(endDate),
+            iterator = 0,
+            y;
 
     while (now <= last) {
       y = 0;
@@ -1116,7 +1119,7 @@ var lines=0;
         console.log(iterator);
         debugger;
       }
-      d.push({ "month": new Date(now), "freq": y });
+      d.push({"month": new Date(now), "freq": y});
       now["setMonth"](now.getMonth() + 1);
     }
 
@@ -1145,40 +1148,40 @@ var lines=0;
     var stackLayers = timeline.selectAll(".layer")
             .data(layers);
     stackLayers.enter().append("path")
-        .attr("clip-path", "url(#sideClip)")
-        .attr("class", "layer")
-        .call(updateLayer)
-        .on("mouseover", function(d) {
-          highlightLayer(d);
-          highlightWord(d);
-        })
-        .on("mouseout", function() {
-          unhighlightLayer();
-          unHighlightWord();
-        });
+            .attr("clip-path", "url(#sideClip)")
+            .attr("class", "layer")
+            .call(updateLayer)
+            .on("mouseover", function (d) {
+              highlightLayer(d);
+              highlightWord(d);
+            })
+            .on("mouseout", function () {
+              unhighlightLayer();
+              unHighlightWord();
+            });
 
     // Lines separating stacked layers.
     var layerLines = timeline.selectAll(".layerLine")
             .data(layers);
     layerLines.enter().append("path")
-        .attr("clip-path", "url(#sideClip)")
-        .attr("class", "layerLine")
-        .call(updateLayerLine);
-    
+            .attr("clip-path", "url(#sideClip)")
+            .attr("class", "layerLine")
+            .call(updateLayerLine);
+
     if (hasTransition) {
       timeline.selectAll(".layer")
-          .transition()
-          .call(updateLayer);
+              .transition()
+              .call(updateLayer);
 
       timeline.selectAll(".layerLine")
-          .transition()
-          .call(updateLayerLine);
+              .transition()
+              .call(updateLayerLine);
     } else {
       timeline.selectAll(".layer")
-        .call(updateLayer);
-    
+              .call(updateLayer);
+
       timeline.selectAll(".layerLine")
-          .call(updateLayerLine);
+              .call(updateLayerLine);
     }
 
     // Remove layers that should no longer be there.
@@ -1230,23 +1233,23 @@ var lines=0;
               }
             });
   }
-  
+
   function highlightWord(d) {
     var cloudText = svg.selectAll("g text")
-        .each(function(d1) {
-          var currentText = d3.select(this);
-          if (d1.text == d.term) {
-            wordTip.show(d1, this);
-            currentText.attr("opacity", "1");
-          } else {
-            currentText.attr("opacity", "0.1");
-          }
-        });
+            .each(function (d1) {
+              var currentText = d3.select(this);
+              if (d1.text == d.term) {
+                wordTip.show(d1, this);
+                currentText.attr("opacity", "1");
+              } else {
+                currentText.attr("opacity", "0.1");
+              }
+            });
     if ($("#relationships").is(":checked")) {
 
       container.selectAll("path.chord").style("opacity", function (p) {
         // COMPARE CHORD IDS
-          return (p.source._id === d.term ||p.target._id==d.term) ? 1 : 0.1;
+        return (p.source._id === d.term || p.target._id == d.term) ? 1 : 0.1;
 
 
       });
@@ -1260,11 +1263,11 @@ var lines=0;
 
     }
   }
-  
+
   function unHighlightWord() {
     svg.selectAll("g text")
-        .attr("opacity", "1")
-        .call(wordTip.hide);
+            .attr("opacity", "1")
+            .call(wordTip.hide);
     if ($("#relationships").is(":checked")) {
 
       container.selectAll("path.chord").style("opacity", function (p) {
@@ -1306,49 +1309,49 @@ var lines=0;
   function getRelatedWords() {
     var rawdata;
     var originwords
-    if(source=="wn") {
+    if (source == "wn") {
       if (wnrawdata.length > 0) {
         rawdata = wnrawdata;
         originwords = new Object();
         topTerms.forEach(function (term) {
           originwords[term.term] = 1;
-          plotRelations_Process(rawdata,originwords);
+          plotRelations_Process(rawdata, originwords);
         })
 
       }
-    else{
-    d3.tsv("data/wikinews.tsv", function (data) {
-      rawdata = data;
-      wnrawdata=data;
-       originwords = new Object();
-      topTerms.forEach(function (term) {
-        originwords[term.term] = 1;
-        plotRelations_Process(rawdata,originwords);
-      })
+      else {
+        d3.tsv("data/wikinews.tsv", function (data) {
+          rawdata = data;
+          wnrawdata = data;
+          originwords = new Object();
+          topTerms.forEach(function (term) {
+            originwords[term.term] = 1;
+            plotRelations_Process(rawdata, originwords);
+          })
 
 
-    })
+        })
       }
     }
 
-    if(source=="hp") {
+    if (source == "hp") {
       if (hprawdata.length > 0) {
         rawdata = hprawdata;
         originwords = new Object();
         topTerms.forEach(function (term) {
           originwords[term.term] = 1;
-          plotRelations_Process(rawdata,originwords);
+          plotRelations_Process(rawdata, originwords);
         })
 
       }
-      else{
+      else {
         d3.tsv("data/huffington.tsv", function (data) {
           rawdata = data;
-          hprawdata=data;
+          hprawdata = data;
           originwords = new Object();
           topTerms.forEach(function (term) {
             originwords[term.term] = 1;
-            plotRelations_Process(rawdata,originwords);
+            plotRelations_Process(rawdata, originwords);
           })
 
 
@@ -1357,12 +1360,11 @@ var lines=0;
     }
 
 
-
     // return relatedwordsArray;
 
   }
 
-  function  plotRelations_Process(rawdata,originwords){
+  function plotRelations_Process(rawdata, originwords) {
     var relatedwordsArray = [];
     var relatedWords = new Object()
     topTerms.forEach(function (term) {
@@ -1461,10 +1463,9 @@ var lines=0;
   var arc
   var chordpath;
   function plotRelations() {
-
     var width = $('#relationshipChart').width();
     var height = $('#relationshipChart').height();
-    innerRadius = ((Math.min(height, width)) / 2)*3/5;
+    innerRadius = ((Math.min(height, width)) / 2) * 3 / 5;
     chordsvg.attr("width", width)
             .attr("height", height)
             .attr("viewBox", "0 0 " + width + " " + height);
@@ -1662,11 +1663,11 @@ var lines=0;
       container.selectAll("path.chord").style("opacity", 0.9);
       timeline.selectAll(".layer")
               .attr("opacity", function (d1) {
-                  return "1";
+                return "1";
               });
       timeline.selectAll(".layerLine")
               .attr("opacity", function (d1) {
-                  return "1";
+                return "1";
               });
     }
 
