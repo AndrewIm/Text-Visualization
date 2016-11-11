@@ -17,6 +17,11 @@ It converts the rawdata into the format of key value pairs where key is the term
 
 ![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/data format.png)
 
+Each monthly wise object contains the blog numbers in which the term occured and monthly frequency
+
+![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/data_monthly_format.png)
+
+
 
 ### Interesting Findings
 
