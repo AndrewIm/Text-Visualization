@@ -7,7 +7,6 @@ Project to extract and visualize the texts from two blogs, The Wikinews data (ro
 
 The web application can be found at https://manorepo.github.io/Text-Visualization/.
 
-Functionality description here.
 
 ### Data Processing
 
@@ -23,6 +22,10 @@ Each monthly wise object contains the blog numbers in which the term occured and
 
 The appication is using the saved blog numbers for calulating the frequency of related words.
 Instead of going through all blogs, it will search for the respective blogs and counts the frequency.
+
+### Functionality 
+The application provides an intuitive user interface, options for the selection of source, time interval options, chart type options(ie, option for the selection of word cloud & relationships between the terms or for a particular term) and option for the number of terms to be displayed.
+In default the application visualizes the top 50 words of wiki news with its word cloud and its corresponding time line.
 
 
 ### Interesting Findings
