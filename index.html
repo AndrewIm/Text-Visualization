@@ -653,6 +653,7 @@
       }
 
       topTerms = getTopTerms(localallTermsArray);
+      stack = stack.offset("silhouette");
       updateStreamGraph(topTerms, true);
       plotRelations()
     })
@@ -1183,6 +1184,8 @@
     });
 
     layers = stack(topTerms);
+    stack = stack.offset("wiggle");
+    
     timelineX.domain([endDate, startDate]);
     timelineY.domain([0, d3.max(layers, function (d) {
       var localMax = d3.max(d.monthfreq, function (d) {
