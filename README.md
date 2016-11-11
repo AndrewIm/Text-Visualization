@@ -77,6 +77,7 @@ The relationships feature of the visualization shows a correlation between the p
 ![Alt text](/screenshots/election-iraq.PNG?raw=true "Iraq in the 2008 election")
 
 #### Team Responsibilities
-Manohar Kotapati(manorepo) - Data Processing  
-James Taber(jmtaber129) - Timeline  
+Manohar Kotapati(manorepo) - Data Processing and Integration of word Cloud with dynamic data.  
+James Taber(jmtaber129) - Timeline and Web Structure
 Sunandha Perumalla(sunandha21) - Word Cloud and Chord Diagram
+
