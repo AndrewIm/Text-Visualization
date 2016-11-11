@@ -30,6 +30,9 @@ In default the application visualizes the top 50 words of wiki news with its wor
 When the user selects the source, required time interval,overview,and  particular number of terms to be displayed then its word cloud and respective time line is displayed.
 when the user hover on a particular word on the word cloud its respective time series graph is highlited on the timeline and viceversa.
 
+![Alt text](https://github.com/manorepo/Text-Visualization/blob/master/screenshots/overview1.png)
+
+
 
 ### Interesting Findings
 
