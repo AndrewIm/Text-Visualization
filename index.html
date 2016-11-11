@@ -787,6 +787,43 @@
     timeline.append("g")
             .attr("class", "y axis")
             .call(yAxis);
+    
+    // Create legend.
+    var legend = timeline.append("g")
+        .attr("transform", "translate(" + (width - 100) + "," + (-margin.top + 2) + ")")
+        .style("fill", "rgb(255, 142, 44)");
+    
+    var categoryColors = [
+      { category: "Person", color: "#0E0" },
+      { category: "Organization", color: "#22F" },
+      { category: "Miscellaneous", color: "#F00" },
+      { category: "Location", color: "rgb(255, 120, 44)" }
+    ];
+    
+    legend.append("rect")
+        .attr("width", 110)
+        .attr("height", 100)
+        .attr("fill", "#FFF")
+        .style("stroke", "#000")
+        .style("stroke-width", "2");
+    
+    legend.selectAll("g").data(categoryColors)
+        .enter()
+        .append("g")
+        .each(function(d, i) {
+          var g = d3.select(this);
+          g.append("circle")
+              .attr("cx", 10)
+              .attr("cy", i * 25 + 10)
+              .attr("r", 6)
+              .style("fill", d.color);
+          
+          g.append("text")
+              .attr("x", 22)
+              .attr("y", i * 25 + 16)
+              .style("fill", d.color)
+              .text(d.category);
+        });
 
     // Zoom demo.
     /*
